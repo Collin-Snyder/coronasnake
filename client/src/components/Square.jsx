@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { memo, useState, useEffect, useMemo } from "react";
 
-const Square = ({ id }) => {
+const Square = memo(({ id }) => {
   return <div className="square" id={id}></div>;
-};
+});
 
 export default Square;

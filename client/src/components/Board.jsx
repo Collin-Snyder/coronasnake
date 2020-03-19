@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import SnakeBoard from "../scripts/gameboardMaker";
 import Snake from "../scripts/snake";
 import { moveSnake } from "../scripts/movement";
+import Square from "./Square.jsx";
 
 const board = new SnakeBoard(100, 50);
 const snake = new Snake();
@@ -27,16 +28,13 @@ const Board = () => {
     if (e.keyCode === 37 && direction !== "right") {
       clearInterval(interval);
       setDirection("left");
-    }
-    if (e.keyCode === 38 && direction !== "down") {
+    } else if (e.keyCode === 38 && direction !== "down") {
       clearInterval(interval);
       setDirection("up");
-    }
-    if (e.keyCode === 39 && direction !== "left") {
+    } else if (e.keyCode === 39 && direction !== "left") {
       clearInterval(interval);
       setDirection("right");
-    }
-    if (e.keyCode === 40 && direction !== "up") {
+    } else if (e.keyCode === 40 && direction !== "up") {
       clearInterval(interval);
       setDirection("down");
     }
@@ -46,9 +44,12 @@ const Board = () => {
 
   return (
     <div className="board">
-      {gameOver ? "YOU LOSE!" : board.squares.map(s => (
-        <div className="square" id={s.id} key={s.id}></div>
-      ))}
+      {gameOver
+        ? "YOU LOSE!"
+        : board.squares.map(s => (
+            <Square id={s.id} key={s.id} />
+            // <div className="square" id={s.id} key={s.id}></div>
+          ))}
     </div>
   );
 };
