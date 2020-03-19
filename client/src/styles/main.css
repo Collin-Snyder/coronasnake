@@ -1,7 +1,25 @@
-.app {
+body {
     background-color: #36454f;
 }
 
 h1 {
     color: #fff;
+}
+
+.board {
+    display: grid;
+    grid-template-rows: repeat(50, 1fr);
+    grid-template-columns: repeat(100, 1fr);
+    width: 80vw;
+}
+
+.square {
+    width: 0.8vw;
+    height: 0.8vw;
+    background-color: white;
+    box-shadow: 1px 1px lightgray inset, -1px -1px lightgray inset;
+}
+
+.square.snake {
+    background-color: green;
 }
