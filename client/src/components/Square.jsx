@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect, useMemo } from "react";
+import React, { memo } from "react";
 
 const Square = memo(({ id }) => {
   return <div className="square" id={id}></div>;

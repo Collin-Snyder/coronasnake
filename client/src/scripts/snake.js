@@ -29,6 +29,17 @@ class Snake {
     this.addToHead(id);
     this.removeFromTail();
   }
+
+  includes(id) {
+      let curr = this.head;
+
+      while(curr) {
+          if (curr.id === id) return true;
+          curr = curr.tailward;
+      }
+      
+      return false;
+  }
 }
 
 const Node = function(id) {

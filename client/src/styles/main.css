@@ -24,3 +24,7 @@ h1 {
     background-color: #36454f;
     /* box-shadow: none; */
 }
+
+.square.food {
+    background-color: rgb(222, 53, 53);
+}
