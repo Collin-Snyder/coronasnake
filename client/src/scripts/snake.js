@@ -15,17 +15,19 @@ class Snake {
       node.tailward = this.head;
       this.head = node;
     }
+    this.size++;
   }
 
   removeFromTail() {
     let oldTail = this.tail;
     this.tail = oldTail.headward;
     oldTail.headward = null;
+    this.size--;
   }
 
   move(id) {
     this.addToHead(id);
-    this.removeFromTail;
+    this.removeFromTail();
   }
 }
 
