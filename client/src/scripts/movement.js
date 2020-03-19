@@ -1,22 +1,10 @@
-export const moveSnake = (next, board, snake, food) => {
-  if (!next || next.snake) {
-    console.log("YOU LOSE!");
-    return false;
-  }
+export const checkNextMove = next => {
+  var gameOver = !next || next.snake ? true : false;
+  return food => {
+    if (gameOver) return null;
 
-  if (next.id === food) {
-    snake.addToHead(next.id);
-  } else {
-    board.set(snake.tail.id, "snake", false);
-    document.getElementById(snake.tail.id).classList.remove("snake");
-
-    snake.move(next.id);
-  }
-
-  board.set(snake.head.id, "snake", true);
-  document.getElementById(snake.head.id).classList.add("snake");
-
-  return true;
+    return next.id === food ? "eat" : "move";
+  };
 };
 
 export const newFood = (board, snake) => {
@@ -28,3 +16,35 @@ export const newFood = (board, snake) => {
 
   return food;
 };
+
+export class Queue {
+  constructor() {
+    this.front = 0;
+    this.end = -1;
+    this.storage = {};
+    this.size = 0;
+  }
+
+  put(value) {
+    this.end++;
+    this.size++;
+    this.storage[this.end] = value;
+  }
+
+  get() {
+    if (this.empty()) return null;
+
+    let oldFront = this.front;
+    let output = this.storage[oldFront];
+
+    this.front++;
+    delete this.storage[oldFront];
+    this.size--;
+
+    return output;
+  }
+
+  empty() {
+    return this.front > this.end;
+  }
+}

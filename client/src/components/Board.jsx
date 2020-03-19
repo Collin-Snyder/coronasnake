@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from "react";
 import SnakeBoard from "../scripts/gameboardMaker";
 import Snake from "../scripts/snake";
-import { moveSnake, newFood } from "../scripts/movement";
+import { checkNextMove, newFood, Queue } from "../scripts/movement";
 import { usePrev } from "../customHooks";
 import Square from "./Square.jsx";
 
-const board = new SnakeBoard(100, 50);
-const snake = new Snake();
-
-snake.addToHead(2247);
-snake.addToHead(2347);
-snake.addToHead(2447);
-snake.addToHead(2547);
+const board = new SnakeBoard(50, 25);
+const snake = new Snake([23, 73, 123, 173]);
+const directions = new Queue();
 
 const Board = () => {
   const [food, setFood] = useState(newFood(board, snake));
@@ -25,14 +21,27 @@ const Board = () => {
   }, [food]);
 
   let interval = setInterval(() => {
+
     let next = board.get(snake.head.id).borders[direction];
-    if (!moveSnake(next, board, snake, food)) {
-      clearInterval(interval);
-      setGameOver(true);
-    } else if (next.id === food) {
-      setFood(newFood(board, snake));
+    let move = checkNextMove(next)(food);
+
+    switch (move) {
+      case null:
+        clearInterval(interval);
+        setGameOver(true);
+        break;
+      case "eat":
+        snake.eat(next.id);
+        setFood(newFood(board, snake));
+      case "move":
+        board.set(snake.tail.id, "snake", false);
+        document.getElementById(snake.tail.id).classList.remove("snake");
+        snake.move(next.id);
+      default:
+        board.set(snake.head.id, "snake", true);
+        document.getElementById(snake.head.id).classList.add("snake");
     }
-  }, 100);
+  }, 200);
 
   const keypressHandler = e => {
     if (![37, 38, 39, 40].includes(e.keyCode)) return;

@@ -1,8 +1,10 @@
 class Snake {
-  constructor() {
+  constructor(startVals = []) {
     this.head = null;
     this.tail = null;
     this.size = 0;
+
+    startVals.forEach(v => this.addToHead(v));
   }
 
   addToHead(id) {
@@ -28,6 +30,10 @@ class Snake {
   move(id) {
     this.addToHead(id);
     this.removeFromTail();
+  }
+
+  eat(id) {
+    this.addToHead(id);
   }
 
   includes(id) {
