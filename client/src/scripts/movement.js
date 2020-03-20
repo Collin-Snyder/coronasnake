@@ -17,6 +17,26 @@ export const newFood = (board, snake) => {
   return food;
 };
 
+export const keypressHandler = (e, state, callback) => {
+  if (![37, 38, 39, 40].includes(e.keyCode)) return;
+
+  e.preventDefault();
+
+  const codes = { 37: "left", 38: "up", 39: "right", 40: "down" };
+  const lat = ["right", "left"];
+  const long = ["up", "down"];
+
+  if (
+    ([37, 39].includes(e.keyCode) && !lat.includes(state[0])) ||
+    ([38, 40].includes(e.keyCode) && !long.includes(state[0]))
+  ) {
+    console.log("keypress handler running: ", codes[e.keyCode]);
+    let newState = [...state];
+    newState.push(codes[e.keyCode]);
+    callback(newState);
+  }
+};
+
 export class Queue {
   constructor(exp = []) {
     this.front = 0;
