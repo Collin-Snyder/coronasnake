@@ -18,11 +18,15 @@ export const newFood = (board, snake) => {
 };
 
 export class Queue {
-  constructor() {
+  constructor(exp = []) {
     this.front = 0;
     this.end = -1;
     this.storage = {};
     this.size = 0;
+
+    if (exp.length) {
+      exp.forEach(e => this.put(e));
+    }
   }
 
   put(value) {
@@ -46,5 +50,21 @@ export class Queue {
 
   empty() {
     return this.front > this.end;
+  }
+
+  oneLeft() {
+    return this.front === this.end;
+  }
+
+  first() {
+    return this.storage[this.front];
+  }
+
+  export() {
+    let output = [];
+    while (!this.empty()) {
+      output.push(this.get());
+    }
+    return output;
   }
 }

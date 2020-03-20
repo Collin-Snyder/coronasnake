@@ -1,33 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import SnakeBoard from "../scripts/gameboardMaker";
 import Snake from "../scripts/snake";
-import { checkNextMove, newFood, Queue } from "../scripts/movement";
-import { usePrev } from "../customHooks";
+import { checkNextMove, newFood } from "../scripts/movement";
+import { usePrev, useInterval } from "../customHooks";
 import Square from "./Square.jsx";
 
-const board = new SnakeBoard(50, 25);
-const snake = new Snake([23, 73, 123, 173]);
-const directions = new Queue();
+const board = new SnakeBoard(25, 25);
+const snake = new Snake([13, 38, 63, 88]);
 
 const Board = () => {
   const [food, setFood] = useState(newFood(board, snake));
-  const [direction, setDirection] = useState("down");
+  const [directions, setDirections] = useState(["down"]);
   const [gameOver, setGameOver] = useState(false);
-  const oldFood = usePrev(food);
+  const moveSnake = useCallback(() => {
+    let next = board.get(snake.head.id).borders[directions[0]];
 
-  useEffect(() => {
-    if (food) document.getElementById(food).classList.add("food");
-    if (oldFood) document.getElementById(oldFood).classList.remove("food");
-  }, [food]);
-
-  let interval = setInterval(() => {
-
-    let next = board.get(snake.head.id).borders[direction];
     let move = checkNextMove(next)(food);
 
     switch (move) {
       case null:
-        clearInterval(interval);
         setGameOver(true);
         break;
       case "eat":
@@ -41,28 +32,41 @@ const Board = () => {
         board.set(snake.head.id, "snake", true);
         document.getElementById(snake.head.id).classList.add("snake");
     }
-  }, 200);
+    
+  }, [directions])
+
+  useInterval(() => {
+    moveSnake();
+    if (directions.length > 1) {
+      let newDirections = [...directions];
+      newDirections.shift();
+      setDirections(newDirections);
+    }
+  }, gameOver ? null : 200)
+
+  const oldFood = usePrev(food);
+
+  useEffect(() => {
+    if (food) document.getElementById(food).classList.add("food");
+    if (oldFood) document.getElementById(oldFood).classList.remove("food");
+  }, [food]);
 
   const keypressHandler = e => {
     if (![37, 38, 39, 40].includes(e.keyCode)) return;
 
     e.preventDefault();
 
+    const codes = { 37: "left", 38: "up", 39: "right", 40: "down" };
     const lat = ["right", "left"];
     const long = ["up", "down"];
 
-    if (e.keyCode === 37 && !lat.includes(direction)) {
-      clearInterval(interval);
-      setDirection("left");
-    } else if (e.keyCode === 38 && !long.includes(direction)) {
-      clearInterval(interval);
-      setDirection("up");
-    } else if (e.keyCode === 39 && !lat.includes(direction)) {
-      clearInterval(interval);
-      setDirection("right");
-    } else if (e.keyCode === 40 && !long.includes(direction)) {
-      clearInterval(interval);
-      setDirection("down");
+    if (
+      ([37, 39].includes(e.keyCode) && !lat.includes(directions[0])) ||
+      ([38, 40].includes(e.keyCode) && !long.includes(directions[0]))
+    ) {
+      let newDirections = [...directions];
+      newDirections.push(codes[e.keyCode]);
+      setDirections(newDirections);
     }
   };
 
@@ -70,9 +74,14 @@ const Board = () => {
 
   return (
     <div className="board">
-      {gameOver
-        ? "YOU LOSE!"
-        : board.squares.map(s => <Square id={s.id} key={s.id} />)}
+      {gameOver ? (
+        <div className="gameover">
+          <h1>YOU LOSE</h1>
+          <button>Play again?</button>
+        </div>
+      ) : (
+        board.squares.map(s => <Square id={s.id} key={s.id} />)
+      )}
     </div>
   );
 };
