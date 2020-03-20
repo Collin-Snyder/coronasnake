@@ -1,12 +1,15 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
+import { Socket } from "../App.jsx";
 import SnakeBoard from "../scripts/gameboardMaker";
 import Snake from "../scripts/snake";
 import { checkNextMove, newFood } from "../scripts/movement";
 import { usePrev, useInterval } from "../customHooks";
 import Square from "./Square.jsx";
 
+
 const board = new SnakeBoard(50, 50);
 let snake = new Snake([13, 38, 63, 88]);
+let snake2 = new Snake();
 
 const reset = (directionCB, foodCB, gameCB) => {
   directionCB(["down"]);
@@ -20,6 +23,12 @@ const reset = (directionCB, foodCB, gameCB) => {
 };
 
 const Board = () => {
+  const socket = useContext(Socket);
+  socket.on("new snake", s => {
+    console.log(s)
+    snake2 = new Snake(s.split("_").map(id => parseInt(id) - 10));
+  });
+
   const [food, setFood] = useState(newFood(board, snake));
   const oldFood = usePrev(food);
   const [directions, setDirections] = useState(["down"]);
@@ -43,7 +52,10 @@ const Board = () => {
       default:
         board.set(snake.head.id, "snake", true);
         document.getElementById(snake.head.id).classList.add("snake");
+        socket.emit("new snake", snake.stringify());
     }
+
+    snake2.each(id => document.getElementById(id).classList.add("snake"))
   }, [directions]);
   const keypressHandler = useCallback(
     e => {

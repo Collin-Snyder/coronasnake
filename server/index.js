@@ -23,6 +23,10 @@ io.on("connection", socket => {
     console.log(msg);
     io.emit("test response", "Well hello there client!")
   });
+  socket.on("new snake", s => {
+    console.log("receiving new snake: ", s);
+    io.emit("new snake", s);
+  })
 });
 
 http.listen(port, () => {
