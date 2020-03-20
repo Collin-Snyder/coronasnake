@@ -1,21 +1,27 @@
 import React, { useState, useEffect, useCallback } from "react";
-import $ from "jquery";
 import SnakeBoard from "../scripts/gameboardMaker";
 import Snake from "../scripts/snake";
 import { checkNextMove, newFood } from "../scripts/movement";
 import { usePrev, useInterval } from "../customHooks";
 import Square from "./Square.jsx";
-// document.addEventListener("keydown", keypressHandler);
 
 const board = new SnakeBoard(50, 50);
-const snake = new Snake([13, 38, 63, 88]);
+let snake = new Snake([13, 38, 63, 88]);
 
-// document.addEventListener("keyup", () => {firing = false})
-
-// document.addEventListener("keydown", (event) => {keypressHandler(event, )});
+const reset = (directionCB, foodCB, gameCB) => {
+  directionCB(["down"]);
+  foodCB(newFood(board, snake));
+  snake.each(id => {
+    document.getElementById(id).classList.remove("snake");
+    board.set(id, "snake", false);
+  });
+  snake = new Snake([13, 38, 63, 88]);
+  gameCB(false);
+};
 
 const Board = () => {
   const [food, setFood] = useState(newFood(board, snake));
+  const oldFood = usePrev(food);
   const [directions, setDirections] = useState(["down"]);
   const [gameOver, setGameOver] = useState(false);
   const moveSnake = useCallback(() => {
@@ -39,35 +45,33 @@ const Board = () => {
         document.getElementById(snake.head.id).classList.add("snake");
     }
   }, [directions]);
-  const keypressHandler = e => {
-    if (![37, 38, 39, 40].includes(e.keyCode)) return;
+  const keypressHandler = useCallback(
+    e => {
+      if (![37, 38, 39, 40].includes(e.keyCode)) return;
 
-    e.preventDefault();
-    console.log("Keypress recognized as valid key: ", e.keyCode)
+      e.preventDefault();
 
-    const codes = { 37: "left", 38: "up", 39: "right", 40: "down" };
-    const lat = ["right", "left"];
-    const long = ["up", "down"];
+      const codes = { 37: "left", 38: "up", 39: "right", 40: "down" };
+      const lat = ["right", "left"];
+      const long = ["up", "down"];
 
-    console.log("directions[0]: ", directions[0]);
-
-    if (
-      ([37, 39].includes(e.keyCode) && !lat.includes(directions[0])) ||
-      ([38, 40].includes(e.keyCode) && !long.includes(directions[0]))
-    ) {
-      console.log("keypress handler running: ", codes[e.keyCode]);
-      let newDirections = [...directions];
-      newDirections.push(codes[e.keyCode]);
-      console.log("new directions after adding new direction: ", newDirections)
-      setDirections(newDirections);
-    }
-  };
+      if (
+        ([37, 39].includes(e.keyCode) && !lat.includes(directions[0])) ||
+        ([38, 40].includes(e.keyCode) && !long.includes(directions[0]))
+      ) {
+        let newDirections = [...directions];
+        newDirections.push(codes[e.keyCode]);
+        setDirections(newDirections);
+      }
+    },
+    [directions]
+  );
 
   useEffect(() => {
     document.addEventListener("keydown", keypressHandler);
     return () => document.removeEventListener("keydown", keypressHandler);
   }, [directions]);
-    
+
   useInterval(
     () => {
       moveSnake();
@@ -80,27 +84,26 @@ const Board = () => {
     gameOver ? null : 100
   );
 
-  const oldFood = usePrev(food);
-
   useEffect(() => {
     if (food) document.getElementById(food).classList.add("food");
     if (oldFood) document.getElementById(oldFood).classList.remove("food");
   }, [food]);
 
-  useEffect(() => {
-    document.addEventListener("keydown", keypressHandler);
-  }, []);
-
   return (
     <div className="board">
-      {gameOver ? (
-        <div className="gameover">
-          <h1>YOU LOSE</h1>
-          <button>Play again?</button>
-        </div>
-      ) : (
-        board.squares.map(s => <Square id={s.id} key={s.id} />)
-      )}
+      <div className="gameover" style={{ display: gameOver ? "flex" : "none" }}>
+        <h1>YOU LOSE</h1>
+        <button
+          onClick={() => {
+            reset(setDirections, setFood, setGameOver);
+          }}
+        >
+          Play again?
+        </button>
+      </div>
+      {board.squares.map(s => (
+        <Square id={s.id} key={s.id} />
+      ))}
     </div>
   );
 };

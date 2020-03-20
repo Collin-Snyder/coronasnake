@@ -46,6 +46,14 @@ class Snake {
       
       return false;
   }
+
+  each(cb) {
+    let curr = this.head;
+    while (curr) {
+      cb(curr.id);
+      curr = curr.tailward;
+    }
+  }
 }
 
 const Node = function(id) {

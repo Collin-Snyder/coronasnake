@@ -18,6 +18,7 @@ h1 {
     grid-template-rows: repeat(50, 1fr);
     grid-template-columns: repeat(50, 1fr);
     width: 40vw;
+    position: relative;
 }
 
 .gameover {
@@ -28,6 +29,9 @@ h1 {
     align-items: center;
     flex-direction: column;
     background-color: black;
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 .square {
