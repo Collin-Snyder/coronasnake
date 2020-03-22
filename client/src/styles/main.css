@@ -43,9 +43,24 @@ h1 {
 
 .square.snake {
     background-color: #36454f;
-    /* box-shadow: none; */
+}
+
+.square.snake1 {
+    background-color: rgb(250, 189, 56)
+}
+
+.square.snake2 {
+    background-color: rgb(101, 181, 101)
 }
 
 .square.food {
     background-color: rgb(222, 53, 53);
+}
+
+.square.food1 {
+    background-color: rgb(208, 142, 0)
+}
+
+.square.food2 {
+    background-color: rgb(26, 148, 26)
 }
