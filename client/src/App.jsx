@@ -8,7 +8,7 @@ import WaitingRoom from "./components/WaitingRoom.jsx";
 import GameSelector from "./components/GameSelector.jsx";
 import io from "socket.io-client";
 
-const socket = io("localhost:4000");
+const socket = io("https://coronasnake.herokuapp.com/");
 console.log(socket);
 
 socket.on("test response", msg => document.getElementById("app").append(msg));

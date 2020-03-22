@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import {Socket} from "../App.jsx";
 
 const GameSelector = () => {
   const [gameList, setGameList] = useState([]);
+
+  useEffect(() => {
+    
+  }, [])
 
   return (
     <div className="gameSelector flexCol">
