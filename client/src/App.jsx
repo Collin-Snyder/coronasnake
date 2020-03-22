@@ -5,6 +5,7 @@ import Home from "./components/Home.jsx";
 import SingleBoard from "./components/SingleBoard.jsx";
 import MultiBoard from "./components/MultiBoard.jsx";
 import WaitingRoom from "./components/WaitingRoom.jsx";
+import GameSelector from "./components/GameSelector.jsx";
 import io from "socket.io-client";
 
 const socket = io("localhost:4000");
@@ -17,24 +18,20 @@ const App = () => {
   return (
     <Socket.Provider value={socket}>
       <Router>
-        <div id="app">
+        <div id="app" className="flexCol">
           <h1>Snake</h1>
           <Switch>
             <Route path="/singleplayer">
               <SingleBoard />
             </Route>
-            <Route path="/multiplayer">
+            <Route path="/multiplayer/:gameId">
               <MultiBoard />
-              <button
-                onClick={() => {
-                  socket.emit("test", "Greetings, I come from the client.");
-                }}
-              >
-                Socket Test!
-              </button>
             </Route>
             <Route path="/waitingroom">
               <WaitingRoom />
+            </Route>
+            <Route path="/gamelist">
+              <GameSelector />
             </Route>
             <Route path="/">
               <Home />

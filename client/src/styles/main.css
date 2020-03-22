@@ -1,3 +1,22 @@
+.flexRow, .flexCol {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flexCol {
+    flex-direction: column;
+}
+
+ul {
+    list-style: none;
+    margin-block-start: 0;
+    margin-block-end: 0;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 0;
+}
+
 body {
     background-color: #36454f;
 }
@@ -6,12 +25,13 @@ h1 {
     color: #fff;
 }
 
-#app{
+
+/* #app{
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-}
+} */
 
 .board {
     display: grid;
@@ -24,10 +44,10 @@ h1 {
 .gameover {
     width: 40vw;
     height: 40vw;
-    display: flex;
+    /* display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
+    flex-direction: column; */
     background-color: black;
     position: absolute;
     top: 0;
@@ -89,12 +109,12 @@ h1 {
     background-color: #ff6666;
 }
 
-.waitingRoom {
+.waitingRoom, .gameSelector {
     color: white;
-    display: flex;
+    /* display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: center; */
 }
 
 .colorSelector {
@@ -102,8 +122,6 @@ h1 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /* border: 2px solid white;
-    border-radius: 20px; */
     padding-bottom: 20px;
 }
 
@@ -113,7 +131,36 @@ h1 {
     justify-content: space-evenly;
 }
 
-.colorOption {
+.colorOption, .colorIcon {
+    display: inline-block;
     width: 50px;
     height: 50px;
+    cursor: pointer;
 }
+
+.colorOption {
+    margin: 1.3vw auto;
+} 
+
+.gameList {
+    width: 30vw;
+}
+
+.gameListItem {
+    display: flex;
+    cursor: pointer;
+    max-width: 30vw;
+    border: 1px solid white;
+    padding: 1.3vw;
+    align-items: center;
+    margin-bottom: 1.3vw;
+}
+
+.colorIcon {
+    margin-right: 1.3vw;
+}
+
+.gameName {
+    margin: 0;
+}
+

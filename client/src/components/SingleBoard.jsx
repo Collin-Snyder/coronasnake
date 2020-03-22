@@ -5,7 +5,6 @@ import { checkNextMove, newFood } from "../scripts/movement";
 import { usePrev, useInterval } from "../customHooks";
 import Square from "./Square.jsx";
 
-
 const board = new SnakeBoard(50, 50);
 let snake = new Snake([16, 41, 66, 91]);
 
@@ -92,7 +91,10 @@ const SingleBoard = () => {
 
   return (
     <div className="board">
-      <div className="gameover" style={{ display: gameOver ? "flex" : "none" }}>
+      <div
+        className="gameover flexCol"
+        style={{ display: gameOver ? "flex" : "none" }}
+      >
         <h1>YOU LOSE</h1>
         <button
           onClick={() => {
