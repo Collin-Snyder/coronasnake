@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Redirect } from "react-router-dom";
+import { Redirect, useParams } from "react-router-dom";
 import $ from "jquery";
 import axios from "axios";
 import { Socket } from "../App.jsx";
@@ -14,12 +14,12 @@ const removeColor = (arr, color) => {
 
 const WaitingRoom = () => {
   const socket = useContext(Socket);
-  const gameId = null;
-  socket.on("new game confirmation", data =>
-    console.log("new game socket confirmation: ", data)
-  );
+  let player = useParams().gameId.length > 1 ? 2 : 1;
+  let gameId = player === 1 ? null : useParams().gameId;
 
-  socket.on("player 2 confirmation", () => <Redirect to={`/multiplayer/${gameId}`} />);
+  socket.on("player 2 confirmation", () => (
+    <Redirect to={`/multiplayer/${gameId}`} />
+  ));
 
   const [colors, setColors] = useState([
     "yellow",
@@ -33,13 +33,25 @@ const WaitingRoom = () => {
   const [colorReady, setColorReady] = useState(false);
 
   useEffect(() => {
-    axios
-      .post("/games", { createdAt: new Date() })
-      .then(data => {
-        socket.emit("new game", data.data);
-        console.log(data);
-      })
-      .catch(err => console.error(err));
+    //if new game, automatically create a new game and store the gameId
+    if (player === 1) {
+      axios
+        .post("/games", { createdAt: new Date() })
+        .then(data => {
+          socket.emit("new game", { id: data.data, player });
+          gameId = data.data;
+          console.log(data);
+        })
+        .catch(err => console.error(err));
+    } else if (player === 2) {
+      //otherwise if player 2, associate with existing game based on id
+      axios
+        .get(`/games/${gameId}`)
+        .then(data => {console.log(data)
+          setColors(removeColor(colors, data.data.color1));
+        })
+        .catch(err => console.error(err));
+    }
   }, []);
 
   useEffect(() => {
@@ -53,9 +65,9 @@ const WaitingRoom = () => {
 
   useEffect(() => {
     if (nameReady && colorReady)
-      socket.emit("new game ready", {
-        name1: nameValue,
-        color1: colors[0]
+      socket.emit("player ready", {
+        [`name${player}`]: nameValue,
+        [`color${player}`]: colors[0]
       });
   }, [nameReady, colorReady]);
 

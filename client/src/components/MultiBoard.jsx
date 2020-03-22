@@ -10,7 +10,7 @@ const board = new SnakeBoard(50, 50);
 
 const MultiBoard = () => {
   const socket = useContext(Socket);
-  const [gameId, setGameId] = useState(useParams().id);
+  const [gameId, setGameId] = useState(useParams().gameId);
 
   useEffect(() => {
     console.log(gameId);

@@ -8,8 +8,9 @@ const GameSelector = () => {
   const [gameList, setGameList] = useState([]);
 
   useEffect(() => {
-    axios.get("/games")
-    .then(data => {console.log(data); setGameList(data.data)});
+    axios.get("/games").then(data => {
+      setGameList(data.data);
+    });
   }, []);
 
   return (
@@ -18,16 +19,18 @@ const GameSelector = () => {
       {gameList.length ? (
         <ul className="gameList flexCol">
           {gameList.map((g, i) => (
-            <li className="gameListItem" id={g.id} key={i}>
-              <span className={`colorIcon ${g.color1}`}></span>
-              <h3 className="gameName">Game with {g.name1}</h3>
-            </li>
+            <Link to={`/waitingRoom/${g.id}`}>
+              <li className="gameListItem" id={g.id} key={i}>
+                <span className={`colorIcon ${g.color1}`}></span>
+                <h3 className="gameName">Game with {g.name1}</h3>
+              </li>
+            </Link>
           ))}
         </ul>
       ) : (
         <div className="flexCol">
           <h3>No games currently open.</h3>
-          <Link to="/waitingRoom">
+          <Link to="/waitingRoom/0">
             <button>Start a game</button>
           </Link>
         </div>

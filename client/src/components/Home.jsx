@@ -15,7 +15,7 @@ const Home = () => {
         className="multiplayerMenu flexCol"
         style={{ display: multiOpen ? "flex" : "none" }}
       >
-        <Link to="/waitingroom">
+        <Link to="/waitingroom/0">
           <button onClick={() => {
               setMultiOpen(false);
               

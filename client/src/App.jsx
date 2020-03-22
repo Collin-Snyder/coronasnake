@@ -8,8 +8,8 @@ import WaitingRoom from "./components/WaitingRoom.jsx";
 import GameSelector from "./components/GameSelector.jsx";
 import io from "socket.io-client";
 
-const socket = io("https://coronasnake.herokuapp.com/");
-// const socket = io("localhost:4000");
+// const socket = io("https://coronasnake.herokuapp.com/");
+const socket = io("localhost:4000");
 console.log(socket);
 
 socket.on("test response", msg => document.getElementById("app").append(msg));
@@ -28,7 +28,7 @@ const App = () => {
             <Route path="/multiplayer/:gameId">
               <MultiBoard />
             </Route>
-            <Route path="/waitingroom">
+            <Route path="/waitingroom/:gameId">
               <WaitingRoom />
             </Route>
             <Route path="/gamelist">
