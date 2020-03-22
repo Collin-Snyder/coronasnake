@@ -17,9 +17,10 @@ const WaitingRoom = () => {
   let player = useParams().gameId.length > 1 ? 2 : 1;
   let gameId = player === 1 ? null : useParams().gameId;
 
-  socket.on("player 2 confirmation", () => (
-    <Redirect to={`/multiplayer/${gameId}`} />
-  ));
+  socket.on("player 2 confirmation", () => {
+    console.log("player 2 confirmed!")
+    return <Redirect to={`/multiplayer/${gameId}`} />}
+  );
 
   const [colors, setColors] = useState([
     "yellow",
@@ -66,6 +67,7 @@ const WaitingRoom = () => {
   useEffect(() => {
     if (nameReady && colorReady)
       socket.emit("player ready", {
+        player,
         [`name${player}`]: nameValue,
         [`color${player}`]: colors[0]
       });
