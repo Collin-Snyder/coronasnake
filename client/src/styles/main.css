@@ -45,22 +45,75 @@ h1 {
     background-color: #36454f;
 }
 
-.square.snake1 {
-    background-color: rgb(250, 189, 56)
-}
-
-.square.snake2 {
-    background-color: rgb(101, 181, 101)
-}
-
 .square.food {
     background-color: rgb(222, 53, 53);
 }
 
-.square.food1 {
-    background-color: rgb(208, 142, 0)
+.yellow {
+    background-color: #c8aa00;
 }
 
-.square.food2 {
-    background-color: rgb(26, 148, 26)
+.green {
+    background-color: #349a34;
+}
+
+.pink {
+    background-color: #c862c8;
+}
+
+.blue {
+    background-color: #0095c8;
+}
+
+.red {
+    background-color: #cc3c3c;
+}
+
+.food.yellow {
+    background-color: #ffe115;
+}
+
+.food.green {
+    background-color: #66cc66;
+}
+
+.food.pink {
+    background-color: #ff99ff;
+}
+
+.food.blue {
+    background-color: #00ccff;
+}
+
+.food.red {
+    background-color: #ff6666;
+}
+
+.waitingRoom {
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.colorSelector {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* border: 2px solid white;
+    border-radius: 20px; */
+    padding-bottom: 20px;
+}
+
+.colorOptions {
+    width: 50vw;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.colorOption {
+    width: 50px;
+    height: 50px;
 }
