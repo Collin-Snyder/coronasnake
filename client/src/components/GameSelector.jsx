@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
-import {Socket} from "../App.jsx";
+import axios from "axios";
+import { Socket } from "../App.jsx";
 
 const GameSelector = () => {
+  const socket = useContext(Socket);
   const [gameList, setGameList] = useState([]);
 
   useEffect(() => {
-    
-  }, [])
+    axios.get("/games")
+    .then(data => {console.log(data); setGameList(data.data)});
+  }, []);
 
   return (
     <div className="gameSelector flexCol">
@@ -15,9 +18,9 @@ const GameSelector = () => {
       {gameList.length ? (
         <ul className="gameList flexCol">
           {gameList.map((g, i) => (
-            <li className="gameListItem" key={i}>
-              <span className={`colorIcon ${g.playerColor}`}></span>
-              <h3 className="gameName">Game with {g.playerName}</h3>
+            <li className="gameListItem" id={g.id} key={i}>
+              <span className={`colorIcon ${g.color1}`}></span>
+              <h3 className="gameName">Game with {g.name1}</h3>
             </li>
           ))}
         </ul>

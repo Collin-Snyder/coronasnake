@@ -2,7 +2,8 @@ const { v4 } = require("uuid");
 
 const games = {};
 
-const Game = function(createdAt) {
+const Game = function(id, createdAt) {
+    this.id = id;
   this.createdAt = createdAt;
   this.name1 = "";
   this.color1 = "";
@@ -21,7 +22,7 @@ const Game = function(createdAt) {
 
 module.exports.addGame = gameInfo => {
   let id = v4();
-  games[id] = new Game(gameInfo.createdAt);
+  games[id] = new Game(id, gameInfo.createdAt);
   return id;
 };
 

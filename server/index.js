@@ -70,6 +70,12 @@ io.on("connection", socket => {
   // setInterval(() => {
   //   socket.emit("snakes", { snake1, snake2 });
   // }, 200);
+  socket.on("disconnect", () => {
+    console.log("user disconnecting");
+    Games.deleteGame(gameId);
+    gameId = null;
+    player = 0;
+  })
 });
 
 http.listen(port, () => {
