@@ -50,6 +50,7 @@ const WaitingRoom = () => {
         .get(`/games/${gameId}`)
         .then(data => {console.log(data)
           setColors(removeColor(colors, data.data.color1));
+          socket.emit("player joining", {id: gameId, player})
         })
         .catch(err => console.error(err));
     }

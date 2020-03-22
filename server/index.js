@@ -59,12 +59,16 @@ io.on("connection", socket => {
     io.to(gameId).emit("new game confirmation", gameId);
   });
 
+  socket.on("player joining", info => {
+    gameId = info.id;
+    player = info.player;
+    socket.join(gameId);
+    io.to(gameId).emit("player 2 joining confirmation", gameId);
+  })
+
   socket.on("player ready", info => {
     Games.updateGame(gameId, info);
-    if ((player = 1))
-      io.to(gameId).emit("player 1 confirmation", Games.getGame(gameId));
-    else if ((player = 2))
-      io.to(gameId).emit("player 2 confirmation", Games.getGame(gameId));
+    io.to(gameId).emit(`player ${player} confirmation`);
   });
 
   // let snake1 = "";
