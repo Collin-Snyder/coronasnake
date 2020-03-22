@@ -4,6 +4,7 @@
   "description": "An attempt to develop a custom zsh script that creates a boilerplate full-stack app with Express, React, Babel, and Webpack.",
   "main": "index.js",
   "scripts": {
+    "start": "node ./server/index.js",
     "server-dev": "nodemon ./server/index.js",
     "react-dev": "webpack -d --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
