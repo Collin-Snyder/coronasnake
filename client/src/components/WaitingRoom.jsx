@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Redirect, useParams } from "react-router-dom";
+import { Redirect, useParams, Link } from "react-router-dom";
 import $ from "jquery";
 import axios from "axios";
 import { Socket } from "../App.jsx";
+import { PlayerContext } from "../contexts/PlayerContext";
+
+const colorOptions = ["yellow", "green", "pink", "blue", "red"];
 
 const filterColors = (arr, color) => {
   return [...arr].filter(c => c === color);
@@ -14,18 +17,12 @@ const removeColor = (arr, color) => {
 
 const WaitingRoom = () => {
   const socket = useContext(Socket);
-
-  const [player, setPlayer] = useState(useParams().gameId.length > 1 ? 2 : 1);
+  const { player, setPlayer } = useContext(PlayerContext);
   const [gameId, setGameId] = useState(
     useParams().gameId.length > 1 ? useParams().gameId : 0
   );
-  const [colors, setColors] = useState([
-    "yellow",
-    "green",
-    "pink",
-    "blue",
-    "red"
-  ]);
+  const [playerState, setPlayerState] = useState(player);
+  const [colors, setColors] = useState([]);
   const [nameValue, setNameValue] = useState("");
   const [nameReady, setNameReady] = useState(false);
   const [colorReady, setColorReady] = useState(false);
@@ -38,8 +35,16 @@ const WaitingRoom = () => {
   socket.on("player 2 confirmation", data => {
     console.log("player 2 confirmed!", data);
     setGameReady(true);
-    // return <Redirect to={`/multiplayer/${gameId}`} />;
   });
+
+  useEffect(() => {
+    gameId ? setPlayerState(2) : setPlayerState(1);
+    console.log(player);
+  }, []);
+
+  useEffect(() => {
+    setPlayer(playerState);
+  }, [playerState]);
 
   useEffect(() => {
     //if new game, automatically create a new game and store the gameId
@@ -49,6 +54,7 @@ const WaitingRoom = () => {
         .then(data => {
           socket.emit("new game", data.data);
           setGameId(data.data);
+          setColors(colorOptions);
           console.log(data);
         })
         .catch(err => console.error(err));
@@ -58,12 +64,12 @@ const WaitingRoom = () => {
         .get(`/games/${gameId}`)
         .then(data => {
           console.log(data);
-          setColors(removeColor(colors, data.data.color1));
+          setColors(removeColor(colorOptions, data.data.color1));
           socket.emit("player joining", data.data.id);
         })
         .catch(err => console.error(err));
     }
-  }, []);
+  }, [playerState]);
 
   useEffect(() => {
     $("#nameInput").on("keyup", e => {

@@ -1,6 +1,7 @@
 import React, { createContext } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import "./styles/main.css";
+import PlayerProvider from "./contexts/PlayerContext";
 import Home from "./components/Home.jsx";
 import SingleBoard from "./components/SingleBoard.jsx";
 import MultiBoard from "./components/MultiBoard.jsx";
@@ -25,18 +26,20 @@ const App = () => {
             <Route path="/singleplayer">
               <SingleBoard />
             </Route>
-            <Route path="/multiplayer/:gameId">
-              <MultiBoard />
-            </Route>
-            <Route path="/waitingroom/:gameId">
-              <WaitingRoom />
-            </Route>
-            <Route path="/gamelist">
-              <GameSelector />
-            </Route>
-            <Route path="/">
-              <Home />
-            </Route>
+            <PlayerProvider>
+              <Route path="/multiplayer/:gameId">
+                <MultiBoard />
+              </Route>
+              <Route path="/waitingroom/:gameId">
+                <WaitingRoom />
+              </Route>
+              <Route path="/gamelist">
+                <GameSelector />
+              </Route>
+              <Route path="/">
+                <Home />
+              </Route>
+            </PlayerProvider>
           </Switch>
         </div>
       </Router>

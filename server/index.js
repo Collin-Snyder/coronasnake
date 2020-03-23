@@ -42,8 +42,6 @@ app
     res.end("Game deleted!");
   });
 
-
-
 var http = require("http").createServer(app);
 const io = require("socket.io")(http);
 
@@ -54,7 +52,6 @@ io.on("connection", socket => {
 
   socket.on("new game", id => {
     gameId = id;
-    // player = info.player;
     player = 1;
     socket.join(gameId);
     io.to(gameId).emit("new game confirmation", gameId);
@@ -62,7 +59,6 @@ io.on("connection", socket => {
 
   socket.on("player joining", id => {
     gameId = id;
-    // player = info.player;
     player = 2;
     socket.join(gameId);
     io.to(gameId).emit("player 2 joining confirmation", gameId);
