@@ -14,8 +14,6 @@ const removeColor = (arr, color) => {
 
 const WaitingRoom = () => {
   const socket = useContext(Socket);
-  // let player = useParams().gameId.length > 1 ? 2 : 1;
-  // let gameId = player === 1 ? null : useParams().gameId;
 
   const [player, setPlayer] = useState(useParams().gameId.length > 1 ? 2 : 1);
   const [gameId, setGameId] = useState(
@@ -124,7 +122,13 @@ const WaitingRoom = () => {
             ></div>
           ))}
         </div>
-        {colorReady && nameReady ? <h2>Waiting for opponent...</h2> : <></>}
+        {colorReady && nameReady && player === 1 ? (
+          <h2>Waiting for opponent...</h2>
+        ) : colorReady && nameReady && player === 2 ? (
+          <h2>Loading game...</h2>
+        ) : (
+          <></>
+        )}
         {gameReady ? <Redirect to={`/multiplayer/${gameId}`} /> : <></>}
       </div>
     </div>
