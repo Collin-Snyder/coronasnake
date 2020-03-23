@@ -5,6 +5,7 @@ const games = {};
 const Game = function(id, createdAt) {
     this.id = id;
   this.createdAt = createdAt;
+  this.status = "open"
   this.name1 = "";
   this.color1 = "";
   this.name2 = "";
@@ -33,8 +34,8 @@ module.exports.updateGame = (id, info) => {
   }
 };
 
-module.exports.getAllGames = () => {
-  return Object.values(games);
+module.exports.getAllOpenGames = () => {
+  return Object.values(games).filter(g => g.status === "open");
 };
 
 module.exports.getGame = id => {

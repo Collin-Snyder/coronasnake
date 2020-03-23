@@ -27,7 +27,7 @@ app.get("/games/:gameId", (req, res) => {
 app
   .route("/games")
   .get((req, res) => {
-    res.send(Games.getAllGames());
+    res.send(Games.getAllOpenGames());
   })
   .post((req, res) => {
     let gameId = Games.addGame(req.body);
@@ -61,14 +61,35 @@ io.on("connection", socket => {
     gameId = id;
     player = 2;
     socket.join(gameId);
+    Games.updateGame(id, {status: "pending"})
     io.to(gameId).emit("player 2 joining confirmation", gameId);
   })
 
   socket.on("player ready", info => {
     console.log("Inside player ready handler: ", gameId);
+    if (player === 2) info.status = "starting";
     Games.updateGame(gameId, info);
     io.to(gameId).emit(`player ${player} confirmation`, Games.getGame(gameId));
   });
+
+  socket.on("game starting", id => {
+    console.log("now starting game ", id);
+    setTimeout(() => {
+      io.to(gameId).emit("starting countdown");
+    }, 3000);
+    setTimeout(() => {
+      io.to(gameId).emit("countdown", 2);
+    }, 4000);
+    setTimeout(() => {
+      io.to(gameId).emit("countdown", 1);
+    }, 5000);
+    setTimeout(() => {
+      io.to(gameId).emit("countdown", "Go!");
+    }, 6000);
+    setTimeout(() => {
+      io.to(gameId).emit("start");
+    }, 7000);
+  })
 
   // let snake1 = "";
   // let snake2 = "";
@@ -83,6 +104,7 @@ io.on("connection", socket => {
   // }, 200);
   socket.on("disconnect", () => {
     console.log("user disconnecting");
+    io.to(gameId).emit("game ended");
     Games.deleteGame(gameId);
     gameId = null;
     player = 0;

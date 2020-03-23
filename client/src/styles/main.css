@@ -33,6 +33,11 @@ h1 {
     flex-direction: column;
 } */
 
+.gameModule {
+    width: 100vw;
+    justify-content: space-evenly;
+}
+
 .board {
   display: grid;
   grid-template-rows: repeat(50, 1fr);
@@ -41,17 +46,17 @@ h1 {
   position: relative;
 }
 
-.gameover {
+.gameover, .getready, .countdown {
   width: 90vw;
   height: 90vw;
-  /* display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column; */
   background-color: black;
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.getready, .countdown {
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .square {
@@ -170,7 +175,7 @@ h1 {
   .board {
     width: 70vw;
   }
-  .gameover {
+  .gameover, .getready, .countdown {
     width: 70vw;
     height: 70vw;
   }
@@ -184,7 +189,7 @@ h1 {
   .board {
     width: 55vw;
   }
-  .gameover {
+  .gameover, .getready, .countdown {
     width: 55vw;
     height: 55vw;
   }
@@ -219,7 +224,7 @@ h1 {
   .board {
     width: 40vw;
   }
-  .gameover {
+  .gameover, .getready, .countdown {
     width: 40vw;
     height: 40vw;
   }

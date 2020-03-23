@@ -11,9 +11,6 @@ import io from "socket.io-client";
 
 // const socket = io("https://coronasnake.herokuapp.com/");
 const socket = io("localhost:4000");
-console.log(socket);
-
-socket.on("test response", msg => document.getElementById("app").append(msg));
 export const Socket = createContext();
 
 const App = () => {
@@ -26,20 +23,26 @@ const App = () => {
             <Route path="/singleplayer">
               <SingleBoard />
             </Route>
-            <PlayerProvider>
-              <Route path="/multiplayer/:gameId">
+            <Route path="/multiplayer/:gameId">
+              <PlayerProvider>
                 <MultiBoard />
-              </Route>
-              <Route path="/waitingroom/:gameId">
+              </PlayerProvider>
+            </Route>
+            <Route path="/waitingroom/:gameId">
+              <PlayerProvider>
                 <WaitingRoom />
-              </Route>
-              <Route path="/gamelist">
+              </PlayerProvider>
+            </Route>
+            <Route path="/gamelist">
+              <PlayerProvider>
                 <GameSelector />
-              </Route>
-              <Route path="/">
+              </PlayerProvider>
+            </Route>
+            <Route path="/">
+              <PlayerProvider>
                 <Home />
-              </Route>
-            </PlayerProvider>
+              </PlayerProvider>
+            </Route>
           </Switch>
         </div>
       </Router>

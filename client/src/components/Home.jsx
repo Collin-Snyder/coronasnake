@@ -4,9 +4,8 @@ import axios from "axios";
 import { PlayerContext } from "../contexts/PlayerContext";
 
 const Home = () => {
-  const {player} = useContext(PlayerContext);
+  const { player, setPlayer } = useContext(PlayerContext);
   const [multiOpen, setMultiOpen] = useState(false);
-  console.log(player);
 
   return (
     <div className="homeMenu flexCol">
@@ -21,6 +20,7 @@ const Home = () => {
         <Link to="/waitingroom/0">
           <button
             onClick={() => {
+              setPlayer(1);
               setMultiOpen(false);
             }}
           >

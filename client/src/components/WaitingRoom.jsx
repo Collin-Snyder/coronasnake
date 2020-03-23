@@ -21,7 +21,6 @@ const WaitingRoom = () => {
   const [gameId, setGameId] = useState(
     useParams().gameId.length > 1 ? useParams().gameId : 0
   );
-  const [playerState, setPlayerState] = useState(player);
   const [colors, setColors] = useState([]);
   const [nameValue, setNameValue] = useState("");
   const [nameReady, setNameReady] = useState(false);
@@ -29,22 +28,13 @@ const WaitingRoom = () => {
   const [gameReady, setGameReady] = useState(false);
 
   socket.on("player 1 confirmation", data => {
-    console.log("player 1 confirmed!", data);
+    console.log("player 1 confirmed!");
   });
 
   socket.on("player 2 confirmation", data => {
-    console.log("player 2 confirmed!", data);
+    console.log("player 2 confirmed!");
     setGameReady(true);
   });
-
-  useEffect(() => {
-    gameId ? setPlayerState(2) : setPlayerState(1);
-    console.log(player);
-  }, []);
-
-  useEffect(() => {
-    setPlayer(playerState);
-  }, [playerState]);
 
   useEffect(() => {
     //if new game, automatically create a new game and store the gameId
@@ -68,8 +58,10 @@ const WaitingRoom = () => {
           socket.emit("player joining", data.data.id);
         })
         .catch(err => console.error(err));
+    } else {
+      console.log(`${player} is not a valid player number.`);
     }
-  }, [playerState]);
+  }, []);
 
   useEffect(() => {
     $("#nameInput").on("keyup", e => {
