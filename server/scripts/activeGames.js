@@ -27,6 +27,7 @@ module.exports.addGame = gameInfo => {
 };
 
 module.exports.updateGame = (id, info) => {
+    console.log("Inside updateGame: ", id);
   for (let property in info) {
     games[id][property] = info[property];
   }

@@ -14,14 +14,13 @@ const removeColor = (arr, color) => {
 
 const WaitingRoom = () => {
   const socket = useContext(Socket);
-  let player = useParams().gameId.length > 1 ? 2 : 1;
-  let gameId = player === 1 ? null : useParams().gameId;
+  // let player = useParams().gameId.length > 1 ? 2 : 1;
+  // let gameId = player === 1 ? null : useParams().gameId;
 
-  socket.on("player 2 confirmation", () => {
-    console.log("player 2 confirmed!")
-    return <Redirect to={`/multiplayer/${gameId}`} />}
+  const [player, setPlayer] = useState(useParams().gameId.length > 1 ? 2 : 1);
+  const [gameId, setGameId] = useState(
+    useParams().gameId.length > 1 ? useParams().gameId : 0
   );
-
   const [colors, setColors] = useState([
     "yellow",
     "green",
@@ -32,6 +31,17 @@ const WaitingRoom = () => {
   const [nameValue, setNameValue] = useState("");
   const [nameReady, setNameReady] = useState(false);
   const [colorReady, setColorReady] = useState(false);
+  const [gameReady, setGameReady] = useState(false);
+
+  socket.on("player 1 confirmation", data => {
+    console.log("player 1 confirmed!", data);
+  });
+
+  socket.on("player 2 confirmation", data => {
+    console.log("player 2 confirmed!", data);
+    setGameReady(true);
+    // return <Redirect to={`/multiplayer/${gameId}`} />;
+  });
 
   useEffect(() => {
     //if new game, automatically create a new game and store the gameId
@@ -39,8 +49,8 @@ const WaitingRoom = () => {
       axios
         .post("/games", { createdAt: new Date() })
         .then(data => {
-          socket.emit("new game", { id: data.data, player });
-          gameId = data.data;
+          socket.emit("new game", data.data);
+          setGameId(data.data);
           console.log(data);
         })
         .catch(err => console.error(err));
@@ -48,9 +58,10 @@ const WaitingRoom = () => {
       //otherwise if player 2, associate with existing game based on id
       axios
         .get(`/games/${gameId}`)
-        .then(data => {console.log(data)
+        .then(data => {
+          console.log(data);
           setColors(removeColor(colors, data.data.color1));
-          socket.emit("player joining", {id: gameId, player})
+          socket.emit("player joining", data.data.id);
         })
         .catch(err => console.error(err));
     }
@@ -68,7 +79,6 @@ const WaitingRoom = () => {
   useEffect(() => {
     if (nameReady && colorReady)
       socket.emit("player ready", {
-        player,
         [`name${player}`]: nameValue,
         [`color${player}`]: colors[0]
       });
@@ -115,6 +125,7 @@ const WaitingRoom = () => {
           ))}
         </div>
         {colorReady && nameReady ? <h2>Waiting for opponent...</h2> : <></>}
+        {gameReady ? <Redirect to={`/multiplayer/${gameId}`} /> : <></>}
       </div>
     </div>
   );

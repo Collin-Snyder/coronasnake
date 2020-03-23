@@ -52,23 +52,26 @@ io.on("connection", socket => {
   let gameId = null;
   let player = 0;
 
-  socket.on("new game", info => {
-    gameId = info.id;
-    player = info.player;
+  socket.on("new game", id => {
+    gameId = id;
+    // player = info.player;
+    player = 1;
     socket.join(gameId);
     io.to(gameId).emit("new game confirmation", gameId);
   });
 
-  socket.on("player joining", info => {
-    gameId = info.id;
-    player = info.player;
+  socket.on("player joining", id => {
+    gameId = id;
+    // player = info.player;
+    player = 2;
     socket.join(gameId);
     io.to(gameId).emit("player 2 joining confirmation", gameId);
   })
 
   socket.on("player ready", info => {
+    console.log("Inside player ready handler: ", gameId);
     Games.updateGame(gameId, info);
-    io.to(gameId).emit(`player ${player} confirmation`);
+    io.to(gameId).emit(`player ${player} confirmation`, Games.getGame(gameId));
   });
 
   // let snake1 = "";
