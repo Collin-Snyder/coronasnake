@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import $ from "jquery";
 import axios from "axios";
@@ -9,6 +9,9 @@ import { PlayerContext } from "../contexts/PlayerContext";
 import { newFood } from "../scripts/movement.js";
 
 const board = new SnakeBoard(50, 50);
+const codes = { 37: "left", 38: "up", 39: "right", 40: "down" };
+const lat = ["right", "left"];
+const long = ["up", "down"];
 
 const MultiBoard = () => {
   const socket = useContext(Socket);
@@ -19,18 +22,92 @@ const MultiBoard = () => {
   const [food, setFood] = useState({});
   const [gameStatus, setGameStatus] = useState("starting");
   const [countdown, setCountdown] = useState(3);
+  const [results, setResults] = useState({ winner: 0, loser: 0 });
+  const [directions, setDirections] = useState({1: "up", 2: "down"})
+  const keypressHandler = useCallback(e => {
+    console.log("keypress handler running")
+    if (![37, 38, 39, 40].includes(e.keyCode) || gameStatus !== "playing") return;
 
-  socket.on("starting countdown", () => {
+    e.preventDefault();
+
+    console.log("keypress handler registers valid arrow key")
+    if (
+      ([37, 39].includes(e.keyCode) && !lat.includes(directions[player])) ||
+      ([38, 40].includes(e.keyCode) && !long.includes(directions[player]))
+    ) {
+      console.log("keypress registered: ", codes[e.keyCode])
+      setDirections({...directions, [player]: codes[e.keyCode]});
+      socket.emit("keypress", codes[e.keyCode]);
+    }
+  }, [gameStatus])
+
+  useEffect(() => {
+    document.addEventListener("keydown", keypressHandler);
+
+    socket.on("starting countdown", () => {
       setGameStatus("countdown");
-  });
+    });
 
-  socket.on("countdown", num => {
+    socket.on("countdown", num => {
       setCountdown(num);
-  });
+    });
 
-  socket.on("start", () => {
+    socket.on("start", () => {
       setGameStatus("playing");
-  })
+      socket.emit("begin movement");
+      // setTimeout(() => {socket.emit("stop")}, 1000)
+    });
+
+    socket.on("interval", game => {
+      if (game.head1 !== snakes.head1)
+        $(`#${game.head1}`).addClass(`snake ${players.color1}`);
+      if (game.head2 !== snakes.head2)
+        $(`#${game.head2}`).addClass(`snake ${players.color2}`);
+      if (game.tail1 !== snakes.tail1)
+        $(`#${game.tail1}`).removeClass(`snake ${players.color1}`);
+      if (game.tail2 !== snakes.tail2)
+        $(`#${game.tail2}`).removeClass(`snake ${players.color2}`);
+
+      let newSnakes = {
+        head1: game.head1,
+        head2: game.head2,
+        tail1: game.tail1,
+        tail2: game.tail2,
+        length1: game.length1,
+        length2: game.length2
+      };
+
+      if (game.food1 !== food.food1) {
+        $(`#${food.food1}`).removeClass(`food ${players.color1}`);
+        $(`#${game.food1}`).addClass(`food ${players.color1}`);
+      }
+      if (game.food2 !== food.food2) {
+        $(`#${food.food2}`).removeClass(`food ${players.color2}`);
+        $(`#${game.food2}`).addClass(`food ${players.color2}`);
+      }
+
+      let newFood = {
+        food1: game.food1,
+        food2: game.food2
+      };
+
+      setSnakes(newSnakes);
+      setFood(newFood);
+
+      return () => {document.removeEventListener("keydown", keypressHandler)}
+    });
+
+    socket.on("game over", data => {
+      console.log("receiving game over");
+      setResults(data);
+      setGameStatus("over");
+    });
+
+    socket.on("game ended", () => {
+      console.log("receiving game ended");
+      setGameStatus("over");
+    });
+  }, [players]);
 
   useEffect(() => {
     console.log(gameId);
@@ -65,76 +142,6 @@ const MultiBoard = () => {
       .catch(err => console.error(err));
   }, []);
 
-//   useEffect(() => {
-//     setTimeout(() => {
-//         setGameStatus("countdown");
-//     }, 3000)
-//   }, [])
-
-//   useEffect(() => {
-//     if (gameStatus === "countdown") {
-//         setTimeout(() => {
-//             setCountdown(2)
-//         }, 1000)
-//         setTimeout(() => {
-//             setCountdown(1)
-//         }, 2000)
-//         setTimeout(() => {
-//             setCountdown("Go!")
-//         }, 3000)
-//         setTimeout(() => {
-//             setGameStatus("playing");
-//             socket.emit("game starting", gameId);
-//         }, 4000)
-//     }
-//   }, [gameStatus])
-
-  //   const [snake1, setSnake1] = useState({});
-  //   const [snake2, setSnake2] = useState({});
-  //   const [food1, setFood1] = useState(0);
-  //   const [food2, setFood2] = useState(0);
-
-  //     socket.on("snake1", () => {});
-  //     socket.on("food1", () => {});
-  //     socket.on("snake2", () => {});
-  //     socket.on("food2", () => {});
-
-  //   const [p1, setP1] = useState({ head: null, tail: null, food: 0 });
-  //   const [p2, setP2] = useState({ head: null, tail: null, food: 0 });
-
-  //   socket.on("interval", data => {
-  //     let player1 = { ...p1 };
-  //     let player2 = { ...p2 };
-
-  //     player1.head = data.head1;
-  //     player2.head = data.head2;
-  //     $(`#${player1.head}`).addClass("snake", "one");
-  //     $(`#${player2.head}`).addClass("snake", "two");
-
-  //     if (data.tail1 !== player1.tail) {
-  //       $(`#${player2.tail}`).removeClass("snake", "one");
-  //       player1.tail = data.tail1;
-  //     }
-  //     if (data.tail2 !== player2.tail) {
-  //       $(`#${player2.tail}`).removeClass("snake", "two");
-  //       player2.tail = data.tail2;
-  //     }
-
-  //     if (data.food1 !== player1.food) {
-  //       $(`#${player1.food}`).removeClass("food", "one");
-  //       player1.food = data.food1;
-  //       $(`#${player1.food}`).addClass("food", "one");
-  //     }
-  //     if (data.food2 !== player2.food) {
-  //       $(`#${player2.food}`).removeClass("food", "two");
-  //       player2.food = data.food2;
-  //       $(`#${player2.food}`).addClass("food", "two");
-  //     }
-
-  //     setP1(player1);
-  //     setP2(player2);
-  //   });
-
   return (
     <div className="gameModule flexRow">
       <div className="playerInfo one flexCol">
@@ -142,11 +149,30 @@ const MultiBoard = () => {
         <h1>{snakes.length1}</h1>
       </div>
       <div className="board">
-        <div className="getready flexCol" style={{display: gameStatus === "starting" ? "flex" : "none"}}>
+        <div
+          className="getready flexCol"
+          style={{ display: gameStatus === "starting" ? "flex" : "none" }}
+        >
           <h1>Get Ready</h1>
         </div>
-        <div className="countdown flexCol" style={{display: gameStatus === "countdown" ? "flex" : "none"}}>
+        <div
+          className="countdown flexCol"
+          style={{ display: gameStatus === "countdown" ? "flex" : "none" }}
+        >
           <h1>{countdown}</h1>
+        </div>
+        <div
+          className="gameover flexCol"
+          style={{ display: gameStatus === "over" ? "flex" : "none" }}
+        >
+          <h1>GAME OVER</h1>
+          <h2>Winner: {players[`name${results.winner}`]}</h2>
+          <h3>
+            {players.name1}'s Snake Length: <strong>{snakes.length1}</strong>
+          </h3>
+          <h3>
+            {players.name2}'s Snake Length: <strong>{snakes.length2}</strong>
+          </h3>
         </div>
         {board.squares.map(s => (
           <Square id={s.id} key={s.id} />

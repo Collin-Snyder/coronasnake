@@ -53,6 +53,7 @@ h1 {
   position: absolute;
   top: 0;
   left: 0;
+  color: white;
 }
 
 .getready, .countdown {
@@ -66,31 +67,31 @@ h1 {
   box-shadow: 1px 1px lightgray inset, -1px -1px lightgray inset;
 }
 
-.square.snake {
+.snake {
   background-color: #36454f;
 }
 
-.square.food {
+.food {
   background-color: rgb(222, 53, 53);
 }
 
-.yellow {
+.yellow, .snake.yellow {
   background-color: #c8aa00;
 }
 
-.green {
+.green, .snake.green {
   background-color: #349a34;
 }
 
-.pink {
+.pink, .snake.pink {
   background-color: #c862c8;
 }
 
-.blue {
+.blue, .snake.blue {
   background-color: #0095c8;
 }
 
-.red {
+.red, .snake.red {
   background-color: #cc3c3c;
 }
 

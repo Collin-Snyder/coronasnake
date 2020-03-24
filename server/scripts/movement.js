@@ -1,4 +1,6 @@
-module.exports.checkNextMove = next => {
+
+
+const checkNextMove = next => {
   var gameOver = !next || next.snake ? true : false;
   return food => {
     if (gameOver) return null;
@@ -7,10 +9,34 @@ module.exports.checkNextMove = next => {
   };
 };
 
-module.exports.newFood = (board, snake) => {
+const moveSnake = (directions, board, snake, food) => {
+  console.log(
+  "inside moveSnake directions: ", directions
+  )
+  let next = board.get(snake.head.id).borders[directions[0]];
+  if (directions.length > 1) directions.shift();
+  console.log("inside moveSnake after shift: ", directions);
+  let move = checkNextMove(next)(food);
+  
+  switch (move) {
+    case null:
+      return false;
+    case "eat":
+      snake.eat(next.id);
+    case "move":
+      board.set(snake.tail.id, "snake", false);
+      snake.move(next.id);
+    default:
+      board.set(snake.head.id, "snake", true);
+      return move;
+  }
+}
+
+
+const newFood = (board, otherFood) => {
   let food = Math.ceil(Math.random() * board.squareCount);
 
-  while (board.get(food).snake) {
+  while (board.get(food).snake || food === otherFood) {
     food = Math.ceil(Math.random() * board.squareCount);
   }
 
@@ -70,3 +96,7 @@ class Queue {
 }
 
 module.exports.Queue = Queue;
+
+module.exports.checkNextMove = checkNextMove;
+module.exports.moveSnake = moveSnake;
+module.exports.newFood = newFood;

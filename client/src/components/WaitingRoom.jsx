@@ -17,24 +17,27 @@ const removeColor = (arr, color) => {
 
 const WaitingRoom = () => {
   const socket = useContext(Socket);
+  const id = useParams().gameId.length > 1 ? useParams().gameId : 0;
   const { player, setPlayer } = useContext(PlayerContext);
-  const [gameId, setGameId] = useState(
-    useParams().gameId.length > 1 ? useParams().gameId : 0
-  );
+  const [gameId, setGameId] = useState(id);
   const [colors, setColors] = useState([]);
   const [nameValue, setNameValue] = useState("");
   const [nameReady, setNameReady] = useState(false);
   const [colorReady, setColorReady] = useState(false);
   const [gameReady, setGameReady] = useState(false);
 
-  socket.on("player 1 confirmation", data => {
-    console.log("player 1 confirmed!");
-  });
+  useEffect(() => {
+    socket.on("player 1 confirmation", data => {
+      console.log("player 1 confirmed!");
+    });
+  
+    socket.on("player 2 confirmation", data => {
+      console.log("player 2 confirmed!");
+      setGameReady(true);
+    });
 
-  socket.on("player 2 confirmation", data => {
-    console.log("player 2 confirmed!");
-    setGameReady(true);
-  });
+  }, [])
+
 
   useEffect(() => {
     //if new game, automatically create a new game and store the gameId
