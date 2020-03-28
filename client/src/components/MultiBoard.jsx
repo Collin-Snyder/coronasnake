@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+  useRef
+} from "react";
 import { useParams } from "react-router-dom";
 import $ from "jquery";
 import axios from "axios";
@@ -16,36 +22,94 @@ const long = ["up", "down"];
 const MultiBoard = () => {
   const socket = useContext(Socket);
   const { player } = useContext(PlayerContext);
-  const [gameId, setGameId] = useState(useParams().gameId);
-  const [players, setPlayers] = useState({});
-  const [snakes, setSnakes] = useState({});
-  const [food, setFood] = useState({});
+  const [gameId] = useState(useParams().gameId);
+  const players = useRef({});
+  const snakes = useRef({});
+  const food = useRef({});
   const [gameStatus, setGameStatus] = useState("starting");
   const [countdown, setCountdown] = useState(3);
   const [results, setResults] = useState({ winner: 0, loser: 0 });
-  const [directions, setDirections] = useState({1: "up", 2: "down"})
-  const keypressHandler = useCallback(e => {
-    console.log("keypress handler running")
-    if (![37, 38, 39, 40].includes(e.keyCode) || gameStatus !== "playing") return;
+  const [directions, setDirections] = useState({ 1: "up", 2: "down" });
+  const keypressHandler = useCallback(
+    e => {
+      console.log("keypress handler running");
 
-    e.preventDefault();
+      if (![37, 38, 39, 40].includes(e.keyCode) || gameStatus !== "playing")
+        return;
 
-    console.log("keypress handler registers valid arrow key")
-    if (
-      ([37, 39].includes(e.keyCode) && !lat.includes(directions[player])) ||
-      ([38, 40].includes(e.keyCode) && !long.includes(directions[player]))
-    ) {
-      console.log("keypress registered: ", codes[e.keyCode])
-      setDirections({...directions, [player]: codes[e.keyCode]});
-      socket.emit("keypress", codes[e.keyCode]);
+      e.preventDefault();
+
+      console.log("keypress handler registers valid arrow key");
+      if (
+        ([37, 39].includes(e.keyCode) && !lat.includes(directions[player])) ||
+        ([38, 40].includes(e.keyCode) && !long.includes(directions[player]))
+      ) {
+        console.log("keypress registered: ", codes[e.keyCode]);
+        setDirections({ ...directions, [player]: codes[e.keyCode] });
+        socket.emit("keypress", codes[e.keyCode]);
+      }
+    },
+    [gameStatus, directions]
+  );
+
+  const handleInterval = (game, players, snakes, food) => {
+    if (game.head1 !== snakes.current.head1)
+      $(`#${game.head1}`).addClass(`snake ${players.current.color1}`);
+    if (game.head2 !== snakes.current.head2)
+      $(`#${game.head2}`).addClass(`snake ${players.current.color2}`);
+    if (game.tail1 !== snakes.current.tail1)
+      $(`#${game.tail1}`).removeClass(`snake ${players.current.color1}`);
+    if (game.tail2 !== snakes.current.tail2)
+      $(`#${game.tail2}`).removeClass(`snake ${players.current.color2}`);
+
+    let newSnakes = {
+      head1: game.head1,
+      head2: game.head2,
+      tail1: game.tail1,
+      tail2: game.tail2,
+      length1: game.length1,
+      length2: game.length2
+    };
+    // console.log("Current head1: ", snakes.head1);
+    // console.log("Incoming head1: ", game.head1);
+
+    // console.log("Incoming food1: ", game.food1);
+    // console.log("Current food1: ", food.food1);
+    // console.log("Incoming food2: ", game.food2);
+    // console.log("Current food2: ", food.food2);
+
+    if (game.food1 !== food.current.food1) {
+      $(`#${food.current.food1}`).removeClass(`food ${players.current.color1}`);
+      $(`#${game.food1}`).addClass(`food ${players.current.color1}`);
     }
-  }, [gameStatus])
+    if (game.food2 !== food.current.food2) {
+      $(`#${food.current.food2}`).removeClass(`food ${players.current.color2}`);
+      $(`#${game.food2}`).addClass(`food ${players.current.color2}`);
+    }
+
+    let newFood = {
+      food1: game.food1,
+      food2: game.food2
+    };
+
+    snakes.current = newSnakes;
+    food.current = newFood;
+  };
+  //   [players, snakes.current, food.current]
+  // );
 
   useEffect(() => {
+    document.removeEventListener("keydown", keypressHandler);
     document.addEventListener("keydown", keypressHandler);
+    return () => {
+      document.removeEventListener("keydown", keypressHandler);
+    };
+  }, [keypressHandler]);
 
+  useEffect(() => {
     socket.on("starting countdown", () => {
       setGameStatus("countdown");
+      console.log("game status countdown");
     });
 
     socket.on("countdown", num => {
@@ -54,58 +118,27 @@ const MultiBoard = () => {
 
     socket.on("start", () => {
       setGameStatus("playing");
+      console.log("Game status playing");
       socket.emit("begin movement");
       // setTimeout(() => {socket.emit("stop")}, 1000)
     });
 
     socket.on("interval", game => {
-      if (game.head1 !== snakes.head1)
-        $(`#${game.head1}`).addClass(`snake ${players.color1}`);
-      if (game.head2 !== snakes.head2)
-        $(`#${game.head2}`).addClass(`snake ${players.color2}`);
-      if (game.tail1 !== snakes.tail1)
-        $(`#${game.tail1}`).removeClass(`snake ${players.color1}`);
-      if (game.tail2 !== snakes.tail2)
-        $(`#${game.tail2}`).removeClass(`snake ${players.color2}`);
-
-      let newSnakes = {
-        head1: game.head1,
-        head2: game.head2,
-        tail1: game.tail1,
-        tail2: game.tail2,
-        length1: game.length1,
-        length2: game.length2
-      };
-
-      if (game.food1 !== food.food1) {
-        $(`#${food.food1}`).removeClass(`food ${players.color1}`);
-        $(`#${game.food1}`).addClass(`food ${players.color1}`);
-      }
-      if (game.food2 !== food.food2) {
-        $(`#${food.food2}`).removeClass(`food ${players.color2}`);
-        $(`#${game.food2}`).addClass(`food ${players.color2}`);
-      }
-
-      let newFood = {
-        food1: game.food1,
-        food2: game.food2
-      };
-
-      setSnakes(newSnakes);
-      setFood(newFood);
-
-      return () => {document.removeEventListener("keydown", keypressHandler)}
+      $(`#${game.food1}`).addClass(`food ${players.current.color1}`);
+      $(`#${game.food2}`).addClass(`food ${players.current.color2}`);
+      handleInterval(game, players, snakes, food);
     });
 
     socket.on("game over", data => {
       console.log("receiving game over");
       setResults(data);
       setGameStatus("over");
+      console.log("game status over");
     });
-
     socket.on("game ended", () => {
       console.log("receiving game ended");
       setGameStatus("over");
+      console.log("game status over");
     });
   }, [players]);
 
@@ -134,9 +167,10 @@ const MultiBoard = () => {
           color1: gameInfo.color1,
           color2: gameInfo.color2
         };
-        setPlayers(playerInfo);
-        setSnakes(snakeInfo);
-        setFood(foodInfo);
+        // setPlayers(playerInfo);
+        players.current = playerInfo;
+        snakes.current = snakeInfo;
+        food.current = foodInfo;
       })
       .then(data => socket.emit("game starting", gameId))
       .catch(err => console.error(err));
@@ -145,8 +179,8 @@ const MultiBoard = () => {
   return (
     <div className="gameModule flexRow">
       <div className="playerInfo one flexCol">
-        <h3>{players.name1}</h3>
-        <h1>{snakes.length1}</h1>
+        <h3>{players.current.name1}</h3>
+        <h1>{snakes.current.length1}</h1>
       </div>
       <div className="board">
         <div
@@ -168,10 +202,12 @@ const MultiBoard = () => {
           <h1>GAME OVER</h1>
           <h2>Winner: {players[`name${results.winner}`]}</h2>
           <h3>
-            {players.name1}'s Snake Length: <strong>{snakes.length1}</strong>
+            {players.current.name1}'s Snake Length:{" "}
+            <strong>{snakes.current.length1}</strong>
           </h3>
           <h3>
-            {players.name2}'s Snake Length: <strong>{snakes.length2}</strong>
+            {players.current.name2}'s Snake Length:{" "}
+            <strong>{snakes.current.length2}</strong>
           </h3>
         </div>
         {board.squares.map(s => (
@@ -179,8 +215,8 @@ const MultiBoard = () => {
         ))}
       </div>
       <div className="playerInfo two flexCol">
-        <h3>{players.name2}</h3>
-        <h1>{snakes.length2}</h1>
+        <h3>{players.current.name2}</h3>
+        <h1>{snakes.current.length2}</h1>
       </div>
     </div>
   );

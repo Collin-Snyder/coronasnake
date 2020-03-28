@@ -72,17 +72,17 @@ const SingleBoard = () => {
     return () => document.removeEventListener("keydown", keypressHandler);
   }, [directions]);
 
-  // useInterval(
-  //   () => {
-  //     moveSnake();
-  //     if (directions.length > 1) {
-  //       let newDirections = [...directions];
-  //       newDirections.shift();
-  //       setDirections(newDirections);
-  //     }
-  //   },
-  //   gameOver ? null : 100
-  // );
+  useInterval(
+    () => {
+      moveSnake();
+      if (directions.length > 1) {
+        let newDirections = [...directions];
+        newDirections.shift();
+        setDirections(newDirections);
+      }
+    },
+    gameOver ? null : 100
+  );
 
   useEffect(() => {
     if (food) document.getElementById(food).classList.add("food");

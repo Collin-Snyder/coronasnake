@@ -32,16 +32,15 @@ const moveSnake = (directions, board, snake, food) => {
   }
 }
 
+// const newFood = (board, otherFood) => {
+//   let food = Math.ceil(Math.random() * board.squareCount);
 
-const newFood = (board, otherFood) => {
-  let food = Math.ceil(Math.random() * board.squareCount);
+//   while (board.get(food).snake || food === otherFood) {
+//     food = Math.ceil(Math.random() * board.squareCount);
+//   }
 
-  while (board.get(food).snake || food === otherFood) {
-    food = Math.ceil(Math.random() * board.squareCount);
-  }
-
-  return food;
-};
+//   return food;
+// };
 
 class Queue {
   constructor(exp = []) {
@@ -99,4 +98,4 @@ module.exports.Queue = Queue;
 
 module.exports.checkNextMove = checkNextMove;
 module.exports.moveSnake = moveSnake;
-module.exports.newFood = newFood;
+// module.exports.newFood = newFood;

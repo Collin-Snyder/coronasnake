@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 
 app.get("/games/:gameId", (req, res) => {
   console.log(req.params.gameId);
-  res.send(Games.getGame(req.params.gameId));
+  res.send(Games.getGame(req.params.gameId).gameSummary());
 });
 
 app
@@ -45,23 +45,25 @@ app
 var http = require("http").createServer(app);
 const io = require("socket.io")(http);
 
-let interval;
-
 io.on("connection", socket => {
   console.log("a user connected");
+  let interval;
   let gameId = null;
   let player = 0;
-  let game;
-  let board;
-  let snake1;
-  let snake2;
-  let queues = { 1: ["up"], 2: ["down"] };
+  // let game;
+  // let board;
+  // let snake1;
+  // let snake2;
+  // let queues = { 1: ["up"], 2: ["down"] };
 
   let intervalCB = () => {
     // console.log("interval running")
     //pull from each direction queue and move snake
-    let move1 = moveSnake(queues[1], board, snake1, game.food1);
-    let move2 = moveSnake(queues[2], board, snake2, game.food2);
+    let game = Games.getGame(gameId);
+
+    //refactor move into one move to accommodate draws
+    let move1 = game.moveSnake(1);
+    let move2 = game.moveSnake(2);
 
     if (!move1 || !move2) {
       clearInterval(interval);
@@ -70,24 +72,11 @@ io.on("connection", socket => {
         winner: !move1 ? 2 : 1,
         loser: !move1 ? 1 : 2
       });
-    } else if (move1 && move2) {
-      game.head1 = snake1.head.id;
-      game.head2 = snake2.head.id;
-      game.tail1 = snake1.tail.id;
-      game.tail2 = snake2.tail.id;
-      game.length1 = snake1.size;
-      game.length2 = snake2.size;
-
-      [move1, move2].forEach((m, i) => {
-        if (m === "eat")
-          game[`food${i + 1}`] = newFood(
-            board,
-            game[`food${i === 0 ? 2 : 1}`]
-          );
-      });
-      io.to(gameId).emit("interval", game);
+    } else {
+      let gameState = game.gameSummary();
+      io.to(gameId).emit("interval", gameState);
     }
-  }
+  };
 
   socket.on("new game", id => {
     gameId = id;
@@ -100,14 +89,14 @@ io.on("connection", socket => {
     gameId = id;
     player = 2;
     socket.join(gameId);
-    Games.updateGame(id, { status: "pending" });
+    Games.getGame(id).update({ status: "pending" });
     io.to(gameId).emit("player 2 joining confirmation", gameId);
   });
 
   socket.on("player ready", info => {
     if (player === 2) info.status = "starting";
-    Games.updateGame(gameId, info);
-    io.to(gameId).emit(`player ${player} confirmation`, Games.getGame(gameId));
+    Games.getGame(gameId).update(info);
+    io.to(gameId).emit(`player ${player} confirmation`);
   });
 
   socket.on("game starting", id => {
@@ -126,65 +115,57 @@ io.on("connection", socket => {
     setTimeout(() => {
       io.to(gameId).emit("start");
     }, 7000);
-
-    console.log("GameId inside game starting: ", gameId);
-    game = Games.getGame(gameId);
-    console.log("Game inside game starting: ", game);
-    board = new Gameboard(50, 50);
-    snake1 = new Snake([2010, 2060, 2110, 2160]);
-    snake2 = new Snake([491, 441, 391, 341]);
-    game.food1 = newFood(board, game.food2);
-    game.food2 = newFood(board, game.food1);
   });
 
   socket.on("begin movement", () => {
     if (!interval && player === 1) {
-      interval = setInterval(intervalCB, 200);
+      interval = setInterval(intervalCB, 100);
     }
   });
 
   socket.on("keypress", direction => {
-    console.log("inside keypress handler: ", direction)
-    queues[player].push(direction);
-    clearInterval(interval);
-    setInterval(() => {
-      // console.log("interval running")
-      //pull from each direction queue and move snake
-      let move1 = moveSnake(queues[1], board, snake1, game.food1);
-      let move2 = moveSnake(queues[2], board, snake2, game.food2);
-  
-      if (!move1 || !move2) {
-        clearInterval(interval);
-        //if game over, emit game over event along with winner/loser
-        io.to(gameId).emit("game over", {
-          winner: !move1 ? 2 : 1,
-          loser: !move1 ? 1 : 2
-        });
-      } else if (move1 && move2) {
-        game.head1 = snake1.head.id;
-        game.head2 = snake2.head.id;
-        game.tail1 = snake1.tail.id;
-        game.tail2 = snake2.tail.id;
-        game.length1 = snake1.size;
-        game.length2 = snake2.size;
-  
-        [move1, move2].forEach((m, i) => {
-          if (m === "eat")
-            game[`food${i + 1}`] = newFood(
-              board,
-              game[`food${i === 0 ? 2 : 1}`]
-            );
-        });
-        io.to(gameId).emit("interval", game);
-      }
-    }, 200);
-    console.log(`new player ${player} queue: ${queues[player]}`)
+    console.log("inside keypress handler: ", direction);
+    Games.getGame(gameId).keypress(player, direction);
+    // queues[player].push(direction);
+    // clearInterval(interval);
+    // interval = setInterval(() => {
+    //   // console.log("interval running")
+    //   //pull from each direction queue and move snake
+    //   let move1 = moveSnake(queues[1], board, snake1, game.food1);
+    //   let move2 = moveSnake(queues[2], board, snake2, game.food2);
+
+    //   if (!move1 || !move2) {
+    //     clearInterval(interval);
+    //     //if game over, emit game over event along with winner/loser
+    //     io.to(gameId).emit("game over", {
+    //       winner: !move1 ? 2 : 1,
+    //       loser: !move1 ? 1 : 2
+    //     });
+    //   } else if (move1 && move2) {
+    //     game.head1 = snake1.head.id;
+    //     game.head2 = snake2.head.id;
+    //     game.tail1 = snake1.tail.id;
+    //     game.tail2 = snake2.tail.id;
+    //     game.length1 = snake1.size;
+    //     game.length2 = snake2.size;
+
+    //     [move1, move2].forEach((m, i) => {
+    //       if (m === "eat")
+    //         game[`food${i + 1}`] = newFood(
+    //           board,
+    //           game[`food${i === 0 ? 2 : 1}`]
+    //         );
+    //     });
+    //     io.to(gameId).emit("interval", game);
+    //   }
+    // }, 1000);
+    // console.log(`new player ${player} queue: ${queues[player]}`)
   });
 
   socket.on("stop", () => {
-    console.log("receiving stop event")
+    console.log("receiving stop event");
     clearInterval(interval);
-  })
+  });
 
   socket.on("disconnect", () => {
     console.log("user disconnecting");
