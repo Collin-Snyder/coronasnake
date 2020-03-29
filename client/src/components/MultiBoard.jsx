@@ -5,7 +5,7 @@ import React, {
   useCallback,
   useRef
 } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Redirect } from "react-router-dom";
 import $ from "jquery";
 import axios from "axios";
 import SnakeBoard from "../scripts/gameboardMaker";
@@ -23,6 +23,7 @@ const MultiBoard = () => {
   const socket = useContext(Socket);
   const { player } = useContext(PlayerContext);
   const [gameId] = useState(useParams().gameId);
+  const [newGameId, setNewGameId] = useState("");
   const players = useRef({});
   const snakes = useRef({});
   const food = useRef({});
@@ -70,13 +71,6 @@ const MultiBoard = () => {
       length1: game.length1,
       length2: game.length2
     };
-    // console.log("Current head1: ", snakes.head1);
-    // console.log("Incoming head1: ", game.head1);
-
-    // console.log("Incoming food1: ", game.food1);
-    // console.log("Current food1: ", food.food1);
-    // console.log("Incoming food2: ", game.food2);
-    // console.log("Current food2: ", food.food2);
 
     if (game.food1 !== food.current.food1) {
       $(`#${food.current.food1}`).removeClass(`food ${players.current.color1}`);
@@ -95,8 +89,6 @@ const MultiBoard = () => {
     snakes.current = newSnakes;
     food.current = newFood;
   };
-  //   [players, snakes.current, food.current]
-  // );
 
   useEffect(() => {
     document.removeEventListener("keydown", keypressHandler);
@@ -107,47 +99,57 @@ const MultiBoard = () => {
   }, [keypressHandler]);
 
   useEffect(() => {
+    socket.on("error", err => {
+      console.error(err);
+    });
+
     socket.on("starting countdown", () => {
+      console.log("starting countdown received");
       setGameStatus("countdown");
-      console.log("game status countdown");
     });
 
     socket.on("countdown", num => {
+      console.log("countdown received");
       setCountdown(num);
     });
 
     socket.on("start", () => {
+      console.log("start received");
       setGameStatus("playing");
-      console.log("Game status playing");
       socket.emit("begin movement");
-      // setTimeout(() => {socket.emit("stop")}, 1000)
     });
 
     socket.on("interval", game => {
+      console.log("incoming interval");
       $(`#${game.food1}`).addClass(`food ${players.current.color1}`);
       $(`#${game.food2}`).addClass(`food ${players.current.color2}`);
       handleInterval(game, players, snakes, food);
     });
 
     socket.on("game over", data => {
-      console.log("receiving game over");
       setResults(data);
       setGameStatus("over");
-      console.log("game status over");
     });
+
     socket.on("game ended", () => {
-      console.log("receiving game ended");
       setGameStatus("over");
-      console.log("game status over");
     });
-  }, [players]);
+
+    socket.on("join new game", newGameId => {
+      socket.emit("joined new game", newGameId);
+    });
+
+    socket.on("new game ready", newGameId => {
+      setNewGameId(newGameId);
+    });
+  }, [players, setNewGameId]);
 
   useEffect(() => {
     console.log(gameId);
+
     axios
       .get(`/games/${gameId}`)
       .then(data => {
-        console.log(data.data);
         let gameInfo = data.data;
         let snakeInfo = {
           head1: gameInfo.head1,
@@ -167,7 +169,6 @@ const MultiBoard = () => {
           color1: gameInfo.color1,
           color2: gameInfo.color2
         };
-        // setPlayers(playerInfo);
         players.current = playerInfo;
         snakes.current = snakeInfo;
         food.current = foodInfo;
@@ -209,7 +210,13 @@ const MultiBoard = () => {
             {players.current.name2}'s Snake Length:{" "}
             <strong>{snakes.current.length2}</strong>
           </h3>
-          <button onClick={()=>{}}>Play again?</button>
+          <button
+            onClick={() => {
+              socket.emit("play again");
+            }}
+          >
+            Play again?
+          </button>
         </div>
         {board.squares.map(s => (
           <Square id={s.id} key={s.id} />
@@ -219,6 +226,7 @@ const MultiBoard = () => {
         <h3>{players.current.name2}</h3>
         <h1>{snakes.current.length2}</h1>
       </div>
+      {newGameId ? <Redirect to={`/multiplayer/${newGameId}`} /> : <></>}
     </div>
   );
 };
