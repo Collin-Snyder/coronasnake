@@ -48,7 +48,10 @@ class Game {
     let diff = {};
     for (let prop in currSummary) {
       if (currSummary[prop] !== prevSummary[prop]) {
-        diff[prop] = currSummary[prop];
+        if (/tail|food/.test(prop)) {
+          diff[prop] = prevSummary[prop];
+          if (/food/.test(prop)) diff[`new${prop}`] = currSummary[prop];
+        } else diff[prop] = currSummary[prop];
       }
     }
     return diff;
@@ -69,9 +72,9 @@ class Game {
     let move2 = this.moveSnake(2);
 
     if (!move1 && !move2) return "draw";
-    else if (!move1) return "2"
-    else if (!move2) return "1"
-    else return "continue"
+    else if (!move1) return "2";
+    else if (!move2) return "1";
+    else return "continue";
   }
 
   checkNextMove(next, food) {

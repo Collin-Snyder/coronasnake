@@ -83,7 +83,6 @@ io.on("connection", socket => {
       io.to(gameId).emit("game over", gameOverStats);
     } else {
       let gameState = game.getSummary();
-
       io.to(gameId).emit("interval", game.getDiff(prevState, gameState));
     }
   };
@@ -102,7 +101,10 @@ io.on("connection", socket => {
       io.to(gameId).emit("countdown", "Go!");
     }, 6000);
     setTimeout(() => {
-      io.to(gameId).emit("start");
+      io.to(gameId).emit("start", {
+        food1: Games.getGame(gameId).food1,
+        food2: Games.getGame(gameId).food2
+      });
     }, 7000);
   };
 
