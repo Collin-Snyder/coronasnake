@@ -50,11 +50,6 @@ io.on("connection", socket => {
   let interval;
   let gameId = null;
   let player = 0;
-  // let game;
-  // let board;
-  // let snake1;
-  // let snake2;
-  // let queues = { 1: ["up"], 2: ["down"] };
 
   let intervalCB = () => {
     //pull from each direction queue and move snake
@@ -65,7 +60,7 @@ io.on("connection", socket => {
     let move = game.moveSnakes();
     // let move2 = game.moveSnakes(2);
 
-    if (move !== "continue") {
+    if (typeof move === "string") {
       clearInterval(interval);
       let gameOverStats = {
         draw: false,
@@ -82,8 +77,10 @@ io.on("connection", socket => {
       }
       io.to(gameId).emit("game over", gameOverStats);
     } else {
-      let gameState = game.getSummary();
-      io.to(gameId).emit("interval", game.getDiff(prevState, gameState));
+      // let gameState = game.getSummary();
+      // io.to(gameId).emit("interval", game.getDiff(prevState, gameState));
+      console.log(move);
+      io.to(gameId).emit("interval", move);
     }
   };
 

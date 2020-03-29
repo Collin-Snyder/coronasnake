@@ -97,14 +97,18 @@ const MultiBoard = () => {
     if (diff.tail2)
       $(`#${diff.tail2}`).removeClass(`snake ${players.current.color2}`);
     if (diff.food1) {
-      $(`#${diff.food1}`).removeClass(`food ${players.current.color1}`);
+      $(`#${diff.food1}`).removeClass(`food`);
       $(`#${diff.newfood1}`).addClass(`food ${players.current.color1}`);
-      players.current.size1++;
     }
     if (diff.food2) {
-      $(`#${diff.food2}`).removeClass(`food ${players.current.color2}`);
+      $(`#${diff.food2}`).removeClass(`food`);
       $(`#${diff.newfood2}`).addClass(`food ${players.current.color2}`);
-      players.current.size2++;
+    }
+    if (diff.size1) {
+      players.current.size1 = diff.size1;
+    }
+    if (diff.size2) {
+      players.current.size2 = diff.size2;
     }
   };
 

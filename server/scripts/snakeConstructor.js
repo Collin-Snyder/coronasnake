@@ -26,26 +26,29 @@ class Snake {
     oldTail.headward = null;
     this.tail.tailward = null;
     this.size--;
+    return oldTail.id;
   }
 
   move(id) {
     this.addToHead(id);
-    this.removeFromTail();
+    let oldTail = this.removeFromTail();
+    return { head: this.head.id, tail: oldTail, size: this.size };
   }
 
   eat(id) {
     this.addToHead(id);
+    return { head: this.head.id, size: this.size };
   }
 
   includes(id) {
-      let curr = this.head;
+    let curr = this.head;
 
-      while(curr) {
-          if (curr.id === id) return true;
-          curr = curr.tailward;
-      }
-      
-      return false;
+    while (curr) {
+      if (curr.id === id) return true;
+      curr = curr.tailward;
+    }
+
+    return false;
   }
 
   each(cb) {
@@ -59,8 +62,8 @@ class Snake {
   stringify() {
     let str = "";
     this.each(id => {
-      str += `${id}_`
-    })
+      str += `${id}_`;
+    });
     return str.slice(0, -1);
   }
 }
