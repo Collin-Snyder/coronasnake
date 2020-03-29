@@ -200,7 +200,7 @@ const MultiBoard = () => {
           style={{ display: gameStatus === "over" ? "flex" : "none" }}
         >
           <h1>GAME OVER</h1>
-          <h2>Winner: {players[`name${results.winner}`]}</h2>
+          <h2>Winner: {players.current[`name${results.winner}`]}</h2>
           <h3>
             {players.current.name1}'s Snake Length:{" "}
             <strong>{snakes.current.length1}</strong>
@@ -209,6 +209,7 @@ const MultiBoard = () => {
             {players.current.name2}'s Snake Length:{" "}
             <strong>{snakes.current.length2}</strong>
           </h3>
+          <button onClick={()=>{}}>Play again?</button>
         </div>
         {board.squares.map(s => (
           <Square id={s.id} key={s.id} />
