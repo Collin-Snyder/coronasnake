@@ -24,6 +24,7 @@ class Snake {
     let oldTail = this.tail;
     this.tail = oldTail.headward;
     oldTail.headward = null;
+    this.tail.tailward = null;
     this.size--;
   }
 
@@ -53,6 +54,14 @@ class Snake {
       cb(curr.id);
       curr = curr.tailward;
     }
+  }
+
+  stringify() {
+    let str = "";
+    this.each(id => {
+      str += `${id}_`
+    })
+    return str.slice(0, -1);
   }
 }
 

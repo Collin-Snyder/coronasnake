@@ -10,7 +10,7 @@ export const checkNextMove = next => {
 export const newFood = (board, snake) => {
   let food = Math.ceil(Math.random() * board.squareCount);
 
-  while (snake.includes(food)) {
+  while (board.get(food).snake) {
     food = Math.ceil(Math.random() * board.squareCount);
   }
 

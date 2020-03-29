@@ -1,51 +1,260 @@
+.flexRow,
+.flexCol {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flexCol {
+  flex-direction: column;
+}
+
+ul {
+  list-style: none;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  padding-inline-start: 0;
+}
+
 body {
-    background-color: #36454f;
+  background-color: #36454f;
 }
 
 h1 {
-    color: #fff;
+  color: #fff;
 }
 
-#app{
+/* #app{
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+} */
+
+.gameModule {
+    width: 100vw;
+    justify-content: space-evenly;
 }
 
 .board {
-    display: grid;
-    grid-template-rows: repeat(50, 1fr);
-    grid-template-columns: repeat(50, 1fr);
-    width: 40vw;
-    position: relative;
+  display: grid;
+  grid-template-rows: repeat(50, 1fr);
+  grid-template-columns: repeat(50, 1fr);
+  width: 90vw;
+  position: relative;
 }
 
-.gameover {
-    width: 40vw;
-    height: 40vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    background-color: black;
-    position: absolute;
-    top: 0;
-    left: 0;
+.gameover, .getready, .countdown {
+  width: 90vw;
+  height: 90vw;
+  background-color: black;
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: white;
+}
+
+.getready, .countdown {
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 .square {
+  width: 1.8vw;
+  height: 1.8vw;
+  background-color: white;
+  box-shadow: 1px 1px lightgray inset, -1px -1px lightgray inset;
+}
+
+.snake {
+  background-color: #36454f;
+}
+
+.food {
+  background-color: rgb(222, 53, 53);
+}
+
+.yellow, .snake.yellow {
+  background-color: #c8aa00;
+}
+
+.green, .snake.green {
+  background-color: #349a34;
+}
+
+.pink, .snake.pink {
+  background-color: #c862c8;
+}
+
+.blue, .snake.blue {
+  background-color: #0095c8;
+}
+
+.red, .snake.red {
+  background-color: #cc3c3c;
+}
+
+.food.yellow {
+  background-color: #ffe115;
+}
+
+.food.green {
+  background-color: #66cc66;
+}
+
+.food.pink {
+  background-color: #ff99ff;
+}
+
+.food.blue {
+  background-color: #00ccff;
+}
+
+.food.red {
+  background-color: #ff6666;
+}
+
+.waitingRoom,
+.gameSelector {
+  color: white;
+  /* display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; */
+}
+
+.colorSelector {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 20px;
+}
+
+.colorOptions {
+  width: 80vw;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.colorOption,
+.colorIcon {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+}
+
+.colorOption {
+  margin: 1.3vw auto;
+}
+
+.gameList {
+  width: 50vw;
+}
+
+.gameListItem {
+  display: flex;
+  cursor: pointer;
+  max-width: 50vw;
+  border: 1px solid white;
+  padding: 2.2vw;
+  align-items: center;
+  margin-bottom: 2.2vw;
+}
+
+.colorIcon {
+  margin-right: 2.2vw;
+}
+
+.gameName {
+  margin: 0;
+}
+
+@media only screen and (min-width: 568px) {
+  .board {
+    width: 70vw;
+  }
+  .gameover, .getready, .countdown {
+    width: 70vw;
+    height: 70vw;
+  }
+  .square {
+    width: 1.4vw;
+    height: 1.4vw;
+  }
+}
+
+@media only screen and (min-width: 720px) {
+  .board {
+    width: 55vw;
+  }
+  .gameover, .getready, .countdown {
+    width: 55vw;
+    height: 55vw;
+  }
+  .square {
+    width: 1.1vw;
+    height: 1.1vw;
+  }
+  .colorOptions {
+    width: 65vw;
+  }
+
+  .colorOption {
+    margin: 1.8vw auto;
+  }
+
+  .gameList {
+    width: 40vw;
+  }
+
+  .gameListItem {
+    max-width: 40vw;
+    padding: 1.8vw;
+    margin-bottom: 1.8vw;
+  }
+
+  .colorIcon {
+    margin-right: 1.8vw;
+  }
+}
+
+@media only screen and (min-width: 900px) {
+  .board {
+    width: 40vw;
+  }
+  .gameover, .getready, .countdown {
+    width: 40vw;
+    height: 40vw;
+  }
+  .square {
     width: 0.8vw;
     height: 0.8vw;
-    background-color: white;
-    box-shadow: 1px 1px lightgray inset, -1px -1px lightgray inset;
-}
+  }
+  .colorSelector {
+    padding-bottom: 20px;
+  }
+  .colorOptions {
+    width: 50vw;
+  }
 
-.square.snake {
-    background-color: #36454f;
-    /* box-shadow: none; */
-}
+  .colorOption {
+    margin: 1.3vw auto;
+  }
 
-.square.food {
-    background-color: rgb(222, 53, 53);
+  .gameList {
+    width: 30vw;
+  }
+
+  .gameListItem {
+    max-width: 30vw;
+    padding: 1.3vw;
+    margin-bottom: 1.3vw;
+  }
+
+  .colorIcon {
+    margin-right: 1.3vw;
+  }
 }
