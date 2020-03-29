@@ -54,11 +54,10 @@ io.on("connection", socket => {
   let intervalCB = () => {
     //pull from each direction queue and move snake
     let game = Games.getGame(gameId);
-    let prevState = game.getSummary();
 
-    //refactor move into one move to accommodate draws
+    //evaluates to either a string describing the winner/if it's a draw 
+    //or an object of game state diffs to send to client
     let move = game.moveSnakes();
-    // let move2 = game.moveSnakes(2);
 
     if (typeof move === "string") {
       clearInterval(interval);
@@ -77,9 +76,8 @@ io.on("connection", socket => {
       }
       io.to(gameId).emit("game over", gameOverStats);
     } else {
-      // let gameState = game.getSummary();
-      // io.to(gameId).emit("interval", game.getDiff(prevState, gameState));
-      console.log(move);
+      //if game not over, emit interval event with object containing 
+      //differences between current game state and prev game state
       io.to(gameId).emit("interval", move);
     }
   };

@@ -104,12 +104,8 @@ const MultiBoard = () => {
       $(`#${diff.food2}`).removeClass(`food`);
       $(`#${diff.newfood2}`).addClass(`food ${players.current.color2}`);
     }
-    if (diff.size1) {
-      players.current.size1 = diff.size1;
-    }
-    if (diff.size2) {
-      players.current.size2 = diff.size2;
-    }
+    if (diff.size1) players.current.size1 = diff.size1;
+    if (diff.size2) players.current.size2 = diff.size2;
   };
 
   useEffect(() => {
