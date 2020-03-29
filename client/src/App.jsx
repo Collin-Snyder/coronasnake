@@ -20,6 +20,11 @@ const App = () => {
         <div id="app" className="flexCol">
           <h1>Snake</h1>
           <Switch>
+            <Route exact path="/">
+              <PlayerProvider>
+                <Home />
+              </PlayerProvider>
+            </Route>
             <Route path="/singleplayer">
               <SingleBoard />
             </Route>
@@ -39,11 +44,6 @@ const App = () => {
             <Route path="/gamelist">
               <PlayerProvider>
                 <GameSelector />
-              </PlayerProvider>
-            </Route>
-            <Route path="/">
-              <PlayerProvider>
-                <Home />
               </PlayerProvider>
             </Route>
           </Switch>

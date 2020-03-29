@@ -114,6 +114,7 @@ io.on("connection", socket => {
   socket.on("player ready", info => {
     if (player === 2) info.status = "starting";
     Games.getGame(gameId).update(info);
+    if (player === 1) io.emit("new game available", Games.getGame(gameId).gameSummary())
     io.to(gameId).emit(`player ${player} confirmation`);
   });
 

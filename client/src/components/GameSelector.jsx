@@ -11,8 +11,12 @@ const GameSelector = () => {
 
   useEffect(() => {
     axios.get("/games").then(data => {
-      setGameList(data.data);
+      setGameList(data.data.filter(g => g.name1 && g.color1));
     });
+
+    socket.on("new game available", (gameInfo) => {
+      setGameList([...gameList, gameInfo]);
+    })
   }, []);
 
   return (
