@@ -23,11 +23,14 @@ const App = () => {
             <Route path="/singleplayer">
               <SingleBoard />
             </Route>
-            <Route path="/multiplayer/:gameId">
-              <PlayerProvider>
-                <MultiBoard />
-              </PlayerProvider>
-            </Route>
+            <Route
+              path="/multiplayer/:gameId"
+              render={() => (
+                <PlayerProvider>
+                  <MultiBoard key={(() => Math.random())()} />
+                </PlayerProvider>
+              )}
+            ></Route>
             <Route path="/waitingroom/:gameId">
               <PlayerProvider>
                 <WaitingRoom />
