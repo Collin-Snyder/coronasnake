@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 
 app.get("/games/:gameId", (req, res) => {
   console.log(req.params.gameId);
-  res.send(Games.getGame(req.params.gameId).gameSummary());
+  res.send(Games.getGame(req.params.gameId).getSummary());
 });
 
 app
@@ -59,6 +59,7 @@ io.on("connection", socket => {
   let intervalCB = () => {
     //pull from each direction queue and move snake
     let game = Games.getGame(gameId);
+    let prevState = game.getSummary();
 
     //refactor move into one move to accommodate draws
     let move = game.moveSnakes();
@@ -81,8 +82,9 @@ io.on("connection", socket => {
       }
       io.to(gameId).emit("game over", gameOverStats);
     } else {
-      let gameState = game.gameSummary();
-      io.to(gameId).emit("interval", gameState);
+      let gameState = game.getSummary();
+
+      io.to(gameId).emit("interval", game.getDiff(prevState, gameState));
     }
   };
 
@@ -123,7 +125,7 @@ io.on("connection", socket => {
     if (player === 2) info.status = "starting";
     Games.getGame(gameId).update(info);
     if (player === 1)
-      io.emit("new game available", Games.getGame(gameId).gameSummary());
+      io.emit("new game available", Games.getGame(gameId).getSummary());
     io.to(gameId).emit(`player ${player} confirmation`);
   });
 

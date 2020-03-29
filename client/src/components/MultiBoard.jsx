@@ -119,10 +119,10 @@ const MultiBoard = () => {
       socket.emit("begin movement");
     });
 
-    socket.on("interval", game => {
-      $(`#${game.food1}`).addClass(`food ${players.current.color1}`);
-      $(`#${game.food2}`).addClass(`food ${players.current.color2}`);
-      handleInterval(game, players, snakes, food);
+    socket.on("interval", gameDiff => {
+      $(`#${gameDiff.food1}`).addClass(`food ${players.current.color1}`);
+      $(`#${gameDiff.food2}`).addClass(`food ${players.current.color2}`);
+      handleInterval(gameDiff, players, snakes, food);
     });
 
     socket.on("game over", data => {

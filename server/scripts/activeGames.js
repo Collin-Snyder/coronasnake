@@ -25,7 +25,7 @@ class Game {
     this.setNewFood(2);
   }
 
-  gameSummary() {
+  getSummary() {
     return {
       id: this.id,
       createdAt: this.createdAt,
@@ -42,6 +42,16 @@ class Game {
       food1: this.food1,
       food2: this.food2
     };
+  }
+
+  getDiff(prevSummary, currSummary) {
+    let diff = {};
+    for (let prop in currSummary) {
+      if (currSummary[prop] !== prevSummary[prop]) {
+        diff[prop] = currSummary[prop];
+      }
+    }
+    return diff;
   }
 
   update(info) {
@@ -130,7 +140,7 @@ const addGame = gameInfo => {
 const getAllOpenGames = () => {
   return Object.values(games)
     .filter(g => g.status === "open")
-    .map(g => g.gameSummary());
+    .map(g => g.getSummary());
 };
 
 const getGame = id => {
@@ -151,7 +161,7 @@ const playAgain = (currentGameId, newGameId) => {
 
   deleteGame(currentGameId);
 
-  return games[newGameId].gameSummary();
+  return games[newGameId].getSummary();
 };
 
 module.exports = { addGame, getAllOpenGames, getGame, deleteGame, playAgain };
