@@ -25,7 +25,7 @@ class Game {
     this.setNewFood(2);
   }
 
-  gameSummary() {
+  getSummary() {
     return {
       id: this.id,
       createdAt: this.createdAt,
@@ -44,6 +44,19 @@ class Game {
     };
   }
 
+  getDiff(prevSummary, currSummary) {
+    let diff = {};
+    for (let prop in currSummary) {
+      if (currSummary[prop] !== prevSummary[prop]) {
+        if (/tail|food/.test(prop)) {
+          diff[prop] = prevSummary[prop];
+          if (/food/.test(prop)) diff[`new${prop}`] = currSummary[prop];
+        } else diff[prop] = currSummary[prop];
+      }
+    }
+    return diff;
+  }
+
   update(info) {
     for (let property in info) {
       this[property] = info[property];
@@ -59,9 +72,9 @@ class Game {
     let move2 = this.moveSnake(2);
 
     if (!move1 && !move2) return "draw";
-    else if (!move1) return "2"
-    else if (!move2) return "1"
-    else return "continue"
+    else if (!move1) return "2";
+    else if (!move2) return "1";
+    else return { ...move1, ...move2 };
   }
 
   checkNextMove(next, food) {
@@ -71,33 +84,45 @@ class Game {
   }
 
   moveSnake(snakeId) {
-    // console.log("inside moveSnake directions: ", directions);
     let snake = this[`snake${snakeId}`];
     let directions = this.queues[snakeId];
     let food = this[`food${snakeId}`];
     let next = this.board.get(snake.head.id).borders[directions[0]];
 
     if (directions.length > 1) directions.shift();
-    // console.log("inside moveSnake after shift: ", directions);
     let move = this.checkNextMove(next, food);
+    let info;
 
     switch (move) {
       case "lose":
         return false;
       case "eat":
-        snake.eat(next.id);
-        this.setNewFood(snakeId);
+        console.log("eating");
+        let snakeInfoEat = snake.eat(next.id);
+        let foodInfo = this.setNewFood(snakeId);
+        info = {
+          [`head${snakeId}`]: snakeInfoEat.head,
+          [`food${snakeId}`]: foodInfo.oldFood,
+          [`newfood${snakeId}`]: foodInfo.newFood,
+          [`size${snakeId}`]: snakeInfoEat.size
+        };
+        break;
       case "move":
         this.board.set(snake.tail.id, "snake", false);
-        snake.move(next.id);
-      default:
-        this.board.set(snake.head.id, "snake", true);
-        return true;
+        let snakeInfoMove = snake.move(next.id);
+        info = {
+          [`head${snakeId}`]: snakeInfoMove.head,
+          [`tail${snakeId}`]: snakeInfoMove.tail
+        };
+        break;
     }
+    this.board.set(snake.head.id, "snake", true);
+    return info;
   }
 
   setNewFood(snakeId) {
     let newFood;
+    let oldFood = this[`food${snakeId}`];
     let otherFood = this[`food${snakeId === 1 ? 2 : 1}`];
 
     do {
@@ -105,6 +130,7 @@ class Game {
     } while (this.board.get(newFood).snake || newFood === otherFood);
 
     this[`food${snakeId}`] = newFood;
+    return { oldFood, newFood };
   }
 
   reset() {
@@ -130,7 +156,7 @@ const addGame = gameInfo => {
 const getAllOpenGames = () => {
   return Object.values(games)
     .filter(g => g.status === "open")
-    .map(g => g.gameSummary());
+    .map(g => g.getSummary());
 };
 
 const getGame = id => {
@@ -151,7 +177,7 @@ const playAgain = (currentGameId, newGameId) => {
 
   deleteGame(currentGameId);
 
-  return games[newGameId].gameSummary();
+  return games[newGameId].getSummary();
 };
 
 module.exports = { addGame, getAllOpenGames, getGame, deleteGame, playAgain };

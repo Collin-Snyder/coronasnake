@@ -36,7 +36,6 @@ const WaitingRoom = () => {
       console.log("player 2 confirmed!");
       setGameReady(true);
     });
-
   }, [])
 
 

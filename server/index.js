@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 
 app.get("/games/:gameId", (req, res) => {
   console.log(req.params.gameId);
-  res.send(Games.getGame(req.params.gameId).gameSummary());
+  res.send(Games.getGame(req.params.gameId).getSummary());
 });
 
 app
@@ -50,21 +50,16 @@ io.on("connection", socket => {
   let interval;
   let gameId = null;
   let player = 0;
-  // let game;
-  // let board;
-  // let snake1;
-  // let snake2;
-  // let queues = { 1: ["up"], 2: ["down"] };
 
   let intervalCB = () => {
     //pull from each direction queue and move snake
     let game = Games.getGame(gameId);
 
-    //refactor move into one move to accommodate draws
+    //evaluates to either a string describing the winner/if it's a draw 
+    //or an object of game state diffs to send to client
     let move = game.moveSnakes();
-    // let move2 = game.moveSnakes(2);
 
-    if (move !== "continue") {
+    if (typeof move === "string") {
       clearInterval(interval);
       let gameOverStats = {
         draw: false,
@@ -81,8 +76,9 @@ io.on("connection", socket => {
       }
       io.to(gameId).emit("game over", gameOverStats);
     } else {
-      let gameState = game.gameSummary();
-      io.to(gameId).emit("interval", gameState);
+      //if game not over, emit interval event with object containing 
+      //differences between current game state and prev game state
+      io.to(gameId).emit("interval", move);
     }
   };
 
@@ -100,7 +96,10 @@ io.on("connection", socket => {
       io.to(gameId).emit("countdown", "Go!");
     }, 6000);
     setTimeout(() => {
-      io.to(gameId).emit("start");
+      io.to(gameId).emit("start", {
+        food1: Games.getGame(gameId).food1,
+        food2: Games.getGame(gameId).food2
+      });
     }, 7000);
   };
 
@@ -123,7 +122,7 @@ io.on("connection", socket => {
     if (player === 2) info.status = "starting";
     Games.getGame(gameId).update(info);
     if (player === 1)
-      io.emit("new game available", Games.getGame(gameId).gameSummary());
+      io.emit("new game available", Games.getGame(gameId).getSummary());
     io.to(gameId).emit(`player ${player} confirmation`);
   });
 

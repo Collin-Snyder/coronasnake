@@ -25,8 +25,6 @@ const MultiBoard = () => {
   const [gameId] = useState(useParams().gameId);
   const [newGameId, setNewGameId] = useState("");
   const players = useRef({});
-  const snakes = useRef({});
-  const food = useRef({});
   const [gameStatus, setGameStatus] = useState("starting");
   const [countdown, setCountdown] = useState(3);
   const [results, setResults] = useState({ draw: false, winner: 0, loser: 0 });
@@ -53,41 +51,61 @@ const MultiBoard = () => {
     [gameStatus, directions]
   );
 
-  const handleInterval = (game, players, snakes, food) => {
-    if (game.head1 !== snakes.current.head1)
-      $(`#${game.head1}`).addClass(`snake ${players.current.color1}`);
-    if (game.head2 !== snakes.current.head2)
-      $(`#${game.head2}`).addClass(`snake ${players.current.color2}`);
-    if (game.tail1 !== snakes.current.tail1)
-      $(`#${game.tail1}`).removeClass(`snake ${players.current.color1}`);
-    if (game.tail2 !== snakes.current.tail2)
-      $(`#${game.tail2}`).removeClass(`snake ${players.current.color2}`);
+  // const handleInterval = (game, players, snakes, food) => {
+  //   if (game.head1 !== snakes.current.head1)
+  //     $(`#${game.head1}`).addClass(`snake ${players.current.color1}`);
+  //   if (game.head2 !== snakes.current.head2)
+  //     $(`#${game.head2}`).addClass(`snake ${players.current.color2}`);
+  //   if (game.tail1 !== snakes.current.tail1)
+  //     $(`#${game.tail1}`).removeClass(`snake ${players.current.color1}`);
+  //   if (game.tail2 !== snakes.current.tail2)
+  //     $(`#${game.tail2}`).removeClass(`snake ${players.current.color2}`);
 
-    let newSnakes = {
-      head1: game.head1,
-      head2: game.head2,
-      tail1: game.tail1,
-      tail2: game.tail2,
-      length1: game.length1,
-      length2: game.length2
-    };
+  //   let newSnakes = {
+  //     head1: game.head1,
+  //     head2: game.head2,
+  //     tail1: game.tail1,
+  //     tail2: game.tail2,
+  //     length1: game.length1,
+  //     length2: game.length2
+  //   };
 
-    if (game.food1 !== food.current.food1) {
-      $(`#${food.current.food1}`).removeClass(`food ${players.current.color1}`);
-      $(`#${game.food1}`).addClass(`food ${players.current.color1}`);
+  //   if (game.food1 !== food.current.food1) {
+  //     $(`#${food.current.food1}`).removeClass(`food ${players.current.color1}`);
+  //     $(`#${game.food1}`).addClass(`food ${players.current.color1}`);
+  //   }
+  //   if (game.food2 !== food.current.food2) {
+  //     $(`#${food.current.food2}`).removeClass(`food ${players.current.color2}`);
+  //     $(`#${game.food2}`).addClass(`food ${players.current.color2}`);
+  //   }
+
+  //   let newFood = {
+  //     food1: game.food1,
+  //     food2: game.food2
+  //   };
+
+  //   snakes.current = newSnakes;
+  //   food.current = newFood;
+  // };
+  const handleInterval = (diff, players) => {
+    if (diff.head1)
+      $(`#${diff.head1}`).addClass(`snake ${players.current.color1}`);
+    if (diff.head2)
+      $(`#${diff.head2}`).addClass(`snake ${players.current.color2}`);
+    if (diff.tail1)
+      $(`#${diff.tail1}`).removeClass(`snake ${players.current.color1}`);
+    if (diff.tail2)
+      $(`#${diff.tail2}`).removeClass(`snake ${players.current.color2}`);
+    if (diff.food1) {
+      $(`#${diff.food1}`).removeClass(`food`);
+      $(`#${diff.newfood1}`).addClass(`food ${players.current.color1}`);
     }
-    if (game.food2 !== food.current.food2) {
-      $(`#${food.current.food2}`).removeClass(`food ${players.current.color2}`);
-      $(`#${game.food2}`).addClass(`food ${players.current.color2}`);
+    if (diff.food2) {
+      $(`#${diff.food2}`).removeClass(`food`);
+      $(`#${diff.newfood2}`).addClass(`food ${players.current.color2}`);
     }
-
-    let newFood = {
-      food1: game.food1,
-      food2: game.food2
-    };
-
-    snakes.current = newSnakes;
-    food.current = newFood;
+    if (diff.size1) players.current.size1 = diff.size1;
+    if (diff.size2) players.current.size2 = diff.size2;
   };
 
   useEffect(() => {
@@ -104,29 +122,25 @@ const MultiBoard = () => {
     });
 
     socket.on("starting countdown", () => {
-      console.log("starting countdown received");
       setGameStatus("countdown");
     });
 
     socket.on("countdown", num => {
-      console.log("countdown received");
       setCountdown(num);
     });
 
-    socket.on("start", () => {
-      console.log("start received");
+    socket.on("start", initialFoodInfo => {
       setGameStatus("playing");
+      $(`#${initialFoodInfo.food1}`).addClass(`food ${players.current.color1}`);
+      $(`#${initialFoodInfo.food2}`).addClass(`food ${players.current.color2}`);
       socket.emit("begin movement");
     });
 
-    socket.on("interval", game => {
-      $(`#${game.food1}`).addClass(`food ${players.current.color1}`);
-      $(`#${game.food2}`).addClass(`food ${players.current.color2}`);
-      handleInterval(game, players, snakes, food);
+    socket.on("interval", gameDiff => {
+      handleInterval(gameDiff, players);
     });
 
     socket.on("game over", data => {
-      console.log(data);
       setResults(data);
       setGameStatus("over");
     });
@@ -145,33 +159,19 @@ const MultiBoard = () => {
   }, [players, setNewGameId]);
 
   useEffect(() => {
-    console.log(gameId);
-
     axios
       .get(`/games/${gameId}`)
       .then(data => {
         let gameInfo = data.data;
-        let snakeInfo = {
-          head1: gameInfo.head1,
-          head2: gameInfo.head2,
-          tail1: gameInfo.tail1,
-          tail2: gameInfo.tail2,
-          length1: gameInfo.length1,
-          length2: gameInfo.length2
-        };
-        let foodInfo = {
-          food1: gameInfo.food1,
-          food2: gameInfo.food2
-        };
         let playerInfo = {
           name1: gameInfo.name1,
           name2: gameInfo.name2,
           color1: gameInfo.color1,
-          color2: gameInfo.color2
+          color2: gameInfo.color2,
+          size1: 4,
+          size2: 4
         };
         players.current = playerInfo;
-        snakes.current = snakeInfo;
-        food.current = foodInfo;
       })
       .then(data => socket.emit("game starting", gameId))
       .catch(err => console.error(err));
@@ -181,7 +181,7 @@ const MultiBoard = () => {
     <div className="gameModule flexRow">
       <div className="playerInfo one flexCol">
         <h3>{players.current.name1}</h3>
-        <h1>{snakes.current.length1}</h1>
+        <h1>{players.current.size1}</h1>
       </div>
       <div className="board">
         <div
@@ -209,11 +209,11 @@ const MultiBoard = () => {
 
           <h3>
             {players.current.name1}'s Snake Length:{" "}
-            <strong>{snakes.current.length1}</strong>
+            <strong>{players.current.size1}</strong>
           </h3>
           <h3>
             {players.current.name2}'s Snake Length:{" "}
-            <strong>{snakes.current.length2}</strong>
+            <strong>{players.current.size2}</strong>
           </h3>
           <button
             onClick={() => {
@@ -229,7 +229,7 @@ const MultiBoard = () => {
       </div>
       <div className="playerInfo two flexCol">
         <h3>{players.current.name2}</h3>
-        <h1>{snakes.current.length2}</h1>
+        <h1>{players.current.size2}</h1>
       </div>
       {newGameId ? <Redirect to={`/multiplayer/${newGameId}`} /> : <></>}
     </div>
