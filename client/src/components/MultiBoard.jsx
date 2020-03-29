@@ -29,7 +29,7 @@ const MultiBoard = () => {
   const food = useRef({});
   const [gameStatus, setGameStatus] = useState("starting");
   const [countdown, setCountdown] = useState(3);
-  const [results, setResults] = useState({ winner: 0, loser: 0 });
+  const [results, setResults] = useState({ draw: false, winner: 0, loser: 0 });
   const [directions, setDirections] = useState({ 1: "up", 2: "down" });
   const keypressHandler = useCallback(
     e => {
@@ -120,13 +120,13 @@ const MultiBoard = () => {
     });
 
     socket.on("interval", game => {
-      console.log("incoming interval");
       $(`#${game.food1}`).addClass(`food ${players.current.color1}`);
       $(`#${game.food2}`).addClass(`food ${players.current.color2}`);
       handleInterval(game, players, snakes, food);
     });
 
     socket.on("game over", data => {
+      console.log(data);
       setResults(data);
       setGameStatus("over");
     });
@@ -201,7 +201,12 @@ const MultiBoard = () => {
           style={{ display: gameStatus === "over" ? "flex" : "none" }}
         >
           <h1>GAME OVER</h1>
-          <h2>Winner: {players.current[`name${results.winner}`]}</h2>
+          {results.draw ? (
+            <h2>It's a draw.</h2>
+          ) : (
+            <h2>Winner: {players.current[`name${results.winner}`]}</h2>
+          )}
+
           <h3>
             {players.current.name1}'s Snake Length:{" "}
             <strong>{snakes.current.length1}</strong>

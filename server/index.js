@@ -57,21 +57,29 @@ io.on("connection", socket => {
   // let queues = { 1: ["up"], 2: ["down"] };
 
   let intervalCB = () => {
-    console.log("interval running");
     //pull from each direction queue and move snake
     let game = Games.getGame(gameId);
 
     //refactor move into one move to accommodate draws
-    let move1 = game.moveSnake(1);
-    let move2 = game.moveSnake(2);
+    let move = game.moveSnakes();
+    // let move2 = game.moveSnakes(2);
 
-    if (!move1 || !move2) {
+    if (move !== "continue") {
       clearInterval(interval);
+      let gameOverStats = {
+        draw: false,
+        winner: 0,
+        loser: 0
+      };
       //if game over, emit game over event along with winner/loser
-      io.to(gameId).emit("game over", {
-        winner: !move1 ? 2 : 1,
-        loser: !move1 ? 1 : 2
-      });
+      if (move === "draw") {
+        gameOverStats.draw = true;
+      } else {
+        move = parseInt(move);
+        gameOverStats.winner = move;
+        gameOverStats.loser = move === 1 ? 2 : 1;
+      }
+      io.to(gameId).emit("game over", gameOverStats);
     } else {
       let gameState = game.gameSummary();
       io.to(gameId).emit("interval", gameState);
@@ -114,7 +122,8 @@ io.on("connection", socket => {
   socket.on("player ready", info => {
     if (player === 2) info.status = "starting";
     Games.getGame(gameId).update(info);
-    if (player === 1) io.emit("new game available", Games.getGame(gameId).gameSummary())
+    if (player === 1)
+      io.emit("new game available", Games.getGame(gameId).gameSummary());
     io.to(gameId).emit(`player ${player} confirmation`);
   });
 

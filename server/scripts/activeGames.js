@@ -54,8 +54,18 @@ class Game {
     this.queues[snakeId].push(direction);
   }
 
+  moveSnakes() {
+    let move1 = this.moveSnake(1);
+    let move2 = this.moveSnake(2);
+
+    if (!move1 && !move2) return "draw";
+    else if (!move1) return "2"
+    else if (!move2) return "1"
+    else return "continue"
+  }
+
   checkNextMove(next, food) {
-    if (!next || next.snake) return "gameOver";
+    if (!next || next.snake) return "lose";
 
     return next.id === food ? "eat" : "move";
   }
@@ -72,7 +82,7 @@ class Game {
     let move = this.checkNextMove(next, food);
 
     switch (move) {
-      case "gameOver":
+      case "lose":
         return false;
       case "eat":
         snake.eat(next.id);
@@ -82,7 +92,7 @@ class Game {
         snake.move(next.id);
       default:
         this.board.set(snake.head.id, "snake", true);
-        return move;
+        return true;
     }
   }
 
