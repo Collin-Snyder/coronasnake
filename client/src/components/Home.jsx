@@ -30,7 +30,7 @@ const Home = () => {
             setMultiOpen(false);
           }}
         >
-          <p className="buttonTitle">Start New Multiplayer Game</p>
+          <p className="buttonTitle">Start Multiplayer Game</p>
         </div>
       </Link>
       <Link to="/gamelist" className="flex">

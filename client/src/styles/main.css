@@ -48,24 +48,23 @@ h1 {
 .homeMenu {
   padding: 5vh;
   height: 85vh;
-  width: 40vw;
+  width: 80vw;
   border: 5px dashed black;
   border-radius: 5vw;
-
 }
 
 .logo {
   display: block;
-  width: 90vw;
-  height: 56.34vw;
+  width: 70vw;
+  height: 44vw;
   background-image: url("../assets/logo.png");
   background-size: contain;
   background-repeat: no-repeat;
 }
 
 .homebutton {
-  width: 18vw;
-  height: 6vw;
+  width: 45vw;
+  height: 15vw;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -85,27 +84,10 @@ h1 {
 .buttonTitle {
   display: inline-block;
   text-align: center;
-  max-width: 16vw;
-  color: #A74A00;
-  text-shadow: 0.2vw 0.2vw #E0B700;
+  max-width: 38vw;
+  color: #a74a00;
+  text-shadow: 0.2vw 0.2vw #e0b700;
   font-size: 0.9em;
-}
-
-.homebutton.single {
-  /* background-color: #009245;
-  box-shadow: -4px -4px #007135 inset, 0 -4px black, 4px 0 black, 0 4px black,
-    -4px 0 black; */
-  /* background-image: url("../assets/singleplayerbutton.png"); */
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-.homebutton.single:active {
-  /* background-image: url("../assets/singleplayerbutton-selected.png"); */
-  background-size: contain;
-  background-repeat: no-repeat;
-  /* background-color: rgb(125, 194, 108);
-  box-shadow: 4px 4px rgb(43, 122, 43) inset, 0 -4px black, 4px 0 black,
-    0 4px black, -4px 0 black; */
 }
 
 .gameModule {
@@ -256,10 +238,32 @@ h1 {
 }
 
 @media only screen and (min-width: 568px) {
+  .homeMenu {
+    padding: 5vh;
+    height: 85vh;
+    width: 60vw;
+    border: 5px dashed black;
+    border-radius: 5vw;
+  }
+
+  .homebutton {
+    width: 36vw;
+    height: 12vw;
+    margin: 2vh;
+  }
+  .buttonTitle {
+    max-width: 30vw;
+    text-shadow: 0.2vw 0.2vw #e0b700;
+    font-size: 0.9em;
+  }
   .logo {
+    width: 55vw;
+    height: 34.57vw;
+  }
+  /* .logo {
     width: 70vw;
     height: 44vw;
-  }
+  } */
 
   .board {
     width: 70vw;
@@ -277,9 +281,27 @@ h1 {
 }
 
 @media only screen and (min-width: 720px) {
+  .homeMenu {
+    padding: 5vh;
+    height: 85vh;
+    width: 60vw;
+    border: 5px dashed black;
+    border-radius: 5vw;
+  }
+
+  .homebutton {
+    width: 30vw;
+    height: 10vw;
+    margin: 2vh;
+  }
+  .buttonTitle {
+    max-width: 25vw;
+    text-shadow: 0.2vw 0.2vw #e0b700;
+    font-size: 0.9em;
+  }
   .logo {
-    width: 55vw;
-    height: 34.57vw;
+    width: 45vw;
+    height: 28.28vw;
   }
 
   .board {
@@ -319,6 +341,30 @@ h1 {
 }
 
 @media only screen and (min-width: 900px) {
+  .homeMenu {
+    padding: 5vh;
+    height: 85vh;
+    width: 40vw;
+    border: 5px dashed black;
+    border-radius: 5vw;
+  }
+
+  .logo {
+    display: block;
+    width: 90vw;
+    height: 56.34vw;
+  }
+
+  .homebutton {
+    width: 18vw;
+    height: 6vw;
+    margin: 2vh;
+  }
+  .buttonTitle {
+    max-width: 16vw;
+    text-shadow: 0.2vw 0.2vw #e0b700;
+    font-size: 0.9em;
+  }
   .logo {
     /* min-width: 30vw; */
     width: 30vw;
