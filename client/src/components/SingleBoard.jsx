@@ -23,6 +23,7 @@ const SingleBoard = () => {
   const [food, setFood] = useState(newFood(board, snake));
   const oldFood = usePrev(food);
   const [directions, setDirections] = useState(["down"]);
+  const [length, setLength] = useState(4);
   const [gameOver, setGameOver] = useState(false);
   const moveSnake = useCallback(() => {
     let next = board.get(snake.head.id).borders[directions[0]];
@@ -35,6 +36,7 @@ const SingleBoard = () => {
         break;
       case "eat":
         snake.eat(next.id);
+        setLength(snake.size);
         setFood(newFood(board, snake));
       case "move":
         board.set(snake.tail.id, "snake", false);
@@ -96,6 +98,7 @@ const SingleBoard = () => {
         style={{ display: gameOver ? "flex" : "none" }}
       >
         <h1>YOU LOSE</h1>
+        <h3>Length: {length}</h3>
         <button
           onClick={() => {
             reset(setDirections, setFood, setGameOver);

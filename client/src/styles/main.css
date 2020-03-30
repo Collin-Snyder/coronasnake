@@ -1,4 +1,4 @@
-.flexRow,
+.flex,
 .flexCol {
   display: flex;
   justify-content: center;
@@ -7,6 +7,18 @@
 
 .flexCol {
   flex-direction: column;
+}
+
+a:-webkit-any-link {
+  color: white;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+p {
+  display: block;
+  margin-block-start: 0;
+  margin-block-end: 0;
 }
 
 ul {
@@ -33,9 +45,72 @@ h1 {
     flex-direction: column;
 } */
 
+.homeMenu {
+  padding: 5vh;
+  height: 85vh;
+  width: 40vw;
+  border: 5px dashed black;
+  border-radius: 5vw;
+
+}
+
+.logo {
+  display: block;
+  width: 90vw;
+  height: 56.34vw;
+  background-image: url("../assets/logo.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.homebutton {
+  width: 18vw;
+  height: 6vw;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Press Start 2P", cursive;
+  border: 0;
+  cursor: pointer;
+  background-image: url("../assets/button-blank.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  margin: 2vh;
+}
+
+.homebutton:active {
+  background-image: url("../assets/button-blank-selected.png");
+}
+
+.buttonTitle {
+  display: inline-block;
+  text-align: center;
+  max-width: 16vw;
+  color: #A74A00;
+  text-shadow: 0.2vw 0.2vw #E0B700;
+  font-size: 0.9em;
+}
+
+.homebutton.single {
+  /* background-color: #009245;
+  box-shadow: -4px -4px #007135 inset, 0 -4px black, 4px 0 black, 0 4px black,
+    -4px 0 black; */
+  /* background-image: url("../assets/singleplayerbutton.png"); */
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+.homebutton.single:active {
+  /* background-image: url("../assets/singleplayerbutton-selected.png"); */
+  background-size: contain;
+  background-repeat: no-repeat;
+  /* background-color: rgb(125, 194, 108);
+  box-shadow: 4px 4px rgb(43, 122, 43) inset, 0 -4px black, 4px 0 black,
+    0 4px black, -4px 0 black; */
+}
+
 .gameModule {
-    width: 100vw;
-    justify-content: space-evenly;
+  width: 100vw;
+  justify-content: space-evenly;
 }
 
 .board {
@@ -46,7 +121,9 @@ h1 {
   position: relative;
 }
 
-.gameover, .getready, .countdown {
+.gameover,
+.getready,
+.countdown {
   width: 90vw;
   height: 90vw;
   background-color: black;
@@ -56,8 +133,9 @@ h1 {
   color: white;
 }
 
-.getready, .countdown {
-    background-color: rgba(0, 0, 0, 0.5);
+.getready,
+.countdown {
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .square {
@@ -75,23 +153,28 @@ h1 {
   background-color: rgb(222, 53, 53);
 }
 
-.yellow, .snake.yellow {
+.yellow,
+.snake.yellow {
   background-color: #c8aa00;
 }
 
-.green, .snake.green {
+.green,
+.snake.green {
   background-color: #349a34;
 }
 
-.pink, .snake.pink {
+.pink,
+.snake.pink {
   background-color: #c862c8;
 }
 
-.blue, .snake.blue {
+.blue,
+.snake.blue {
   background-color: #0095c8;
 }
 
-.red, .snake.red {
+.red,
+.snake.red {
   background-color: #cc3c3c;
 }
 
@@ -173,10 +256,17 @@ h1 {
 }
 
 @media only screen and (min-width: 568px) {
+  .logo {
+    width: 70vw;
+    height: 44vw;
+  }
+
   .board {
     width: 70vw;
   }
-  .gameover, .getready, .countdown {
+  .gameover,
+  .getready,
+  .countdown {
     width: 70vw;
     height: 70vw;
   }
@@ -187,10 +277,17 @@ h1 {
 }
 
 @media only screen and (min-width: 720px) {
+  .logo {
+    width: 55vw;
+    height: 34.57vw;
+  }
+
   .board {
     width: 55vw;
   }
-  .gameover, .getready, .countdown {
+  .gameover,
+  .getready,
+  .countdown {
     width: 55vw;
     height: 55vw;
   }
@@ -222,10 +319,19 @@ h1 {
 }
 
 @media only screen and (min-width: 900px) {
+  .logo {
+    /* min-width: 30vw; */
+    width: 30vw;
+    height: 18.89vw;
+    /* height: 10vw; */
+  }
+
   .board {
     width: 40vw;
   }
-  .gameover, .getready, .countdown {
+  .gameover,
+  .getready,
+  .countdown {
     width: 40vw;
     height: 40vw;
   }

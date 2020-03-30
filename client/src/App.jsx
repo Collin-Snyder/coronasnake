@@ -9,8 +9,8 @@ import WaitingRoom from "./components/WaitingRoom.jsx";
 import GameSelector from "./components/GameSelector.jsx";
 import io from "socket.io-client";
 
-const socket = io("https://coronasnake.herokuapp.com/");
-// const socket = io("localhost:4000");
+// const socket = io("https://coronasnake.herokuapp.com/");
+const socket = io("localhost:4000");
 export const Socket = createContext();
 
 const App = () => {
@@ -18,7 +18,6 @@ const App = () => {
     <Socket.Provider value={socket}>
       <Router>
         <div id="app" className="flexCol">
-          <h1>Snake</h1>
           <Switch>
             <Route exact path="/">
               <PlayerProvider>
