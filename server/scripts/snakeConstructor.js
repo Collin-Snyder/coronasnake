@@ -1,3 +1,10 @@
+const reverses = {
+  up: "down",
+  down: "up",
+  left: "right",
+  right: "left"
+};
+
 class Snake {
   constructor(startVals = []) {
     this.head = null;
@@ -7,17 +14,23 @@ class Snake {
     startVals.forEach(v => this.addToHead(v));
   }
 
-  addToHead(id) {
+  addToHead(id, dir) {
     let node = new Node(id);
+    this.size++;
     if (!this.head) {
       this.head = node;
       this.tail = node;
+      this.head.prevDir = "up";
+      this.tail.nextDir = "down";
+      return this.head;
     } else {
       this.head.headward = node;
+      this.head.nextDir = dir;
       node.tailward = this.head;
       this.head = node;
+      this.head.prevDir = reverses[dir];
+      return this.head.tailward;
     }
-    this.size++;
   }
 
   removeFromTail() {
@@ -26,18 +39,33 @@ class Snake {
     oldTail.headward = null;
     this.tail.tailward = null;
     this.size--;
-    return oldTail.id;
+    return oldTail;
   }
 
-  move(id) {
-    this.addToHead(id);
+  move(id, dir) {
+    let oldHead = this.addToHead(id, dir);
     let oldTail = this.removeFromTail();
-    return { head: this.head.id, tail: oldTail, size: this.size };
+    return {
+      newHead: this.head.id,
+      oldHead: oldHead.id,
+      oldHeadNextDir: oldHead.nextDir,
+      oldHeadPrevDir: oldHead.prevDir,
+      oldTail: oldTail.id,
+      newTail: this.tail.id,
+      newTailNextDir: this.tail.nextDir
+    };
   }
 
-  eat(id) {
-    this.addToHead(id);
-    return { head: this.head.id, size: this.size };
+  eat(id, dir) {
+    let oldHead = this.addToHead(id, dir);
+    return {
+      newHead: this.head.id,
+      oldHead: this.head.tailward.id,
+      oldHead: oldHead.id,
+      oldHeadNextDir: oldHead.nextDir,
+      oldHeadPrevDir: oldHead.prevDir,
+      size: this.size
+    };
   }
 
   includes(id) {
@@ -72,6 +100,8 @@ const Node = function(id) {
   this.id = id;
   this.headward = null;
   this.tailward = null;
+  this.nextDir = "";
+  this.prevDir = "";
 };
 
 module.exports.Snake = Snake;

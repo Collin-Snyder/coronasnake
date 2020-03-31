@@ -51,61 +51,84 @@ const MultiBoard = () => {
     [gameStatus, directions]
   );
 
-  // const handleInterval = (game, players, snakes, food) => {
-  //   if (game.head1 !== snakes.current.head1)
-  //     $(`#${game.head1}`).addClass(`snake ${players.current.color1}`);
-  //   if (game.head2 !== snakes.current.head2)
-  //     $(`#${game.head2}`).addClass(`snake ${players.current.color2}`);
-  //   if (game.tail1 !== snakes.current.tail1)
-  //     $(`#${game.tail1}`).removeClass(`snake ${players.current.color1}`);
-  //   if (game.tail2 !== snakes.current.tail2)
-  //     $(`#${game.tail2}`).removeClass(`snake ${players.current.color2}`);
-
-  //   let newSnakes = {
-  //     head1: game.head1,
-  //     head2: game.head2,
-  //     tail1: game.tail1,
-  //     tail2: game.tail2,
-  //     length1: game.length1,
-  //     length2: game.length2
-  //   };
-
-  //   if (game.food1 !== food.current.food1) {
-  //     $(`#${food.current.food1}`).removeClass(`food ${players.current.color1}`);
-  //     $(`#${game.food1}`).addClass(`food ${players.current.color1}`);
-  //   }
-  //   if (game.food2 !== food.current.food2) {
-  //     $(`#${food.current.food2}`).removeClass(`food ${players.current.color2}`);
-  //     $(`#${game.food2}`).addClass(`food ${players.current.color2}`);
-  //   }
-
-  //   let newFood = {
-  //     food1: game.food1,
-  //     food2: game.food2
-  //   };
-
-  //   snakes.current = newSnakes;
-  //   food.current = newFood;
-  // };
   const handleInterval = (diff, players) => {
-    if (diff.head1)
-      $(`#${diff.head1}`).addClass(`snake ${players.current.color1}`);
-    if (diff.head2)
-      $(`#${diff.head2}`).addClass(`snake ${players.current.color2}`);
-    if (diff.tail1)
-      $(`#${diff.tail1}`).removeClass(`snake ${players.current.color1}`);
-    if (diff.tail2)
-      $(`#${diff.tail2}`).removeClass(`snake ${players.current.color2}`);
-    if (diff.food1) {
-      $(`#${diff.food1}`).removeClass(`food`);
-      $(`#${diff.newfood1}`).addClass(`food ${players.current.color1}`);
+    // if (diff.head1)
+    //   $(`#${diff.head1}`).addClass(`snake ${players.current.color1}`);
+    // if (diff.head2)
+    //   $(`#${diff.head2}`).addClass(`snake ${players.current.color2}`);
+    // if (diff.tail1)
+    //   $(`#${diff.tail1}`).removeClass(`snake ${players.current.color1}`);
+    // if (diff.tail2)
+    //   $(`#${diff.tail2}`).removeClass(`snake ${players.current.color2}`);
+    // if (diff.food1) {
+    //   $(`#${diff.food1}`).removeClass(`food`);
+    //   $(`#${diff.newfood1}`).addClass(`food ${players.current.color1}`);
+    // }
+    // if (diff.food2) {
+    //   $(`#${diff.food2}`).removeClass(`food`);
+    //   $(`#${diff.newfood2}`).addClass(`food ${players.current.color2}`);
+    // }
+    // if (diff.size1) players.current.size1 = diff.size1;
+    // if (diff.size2) players.current.size2 = diff.size2;
+
+    $(`#${diff.newHead1}`).addClass(
+      `snake head ${diff.direction1} ${players.current.color1}`
+    );
+    $(`#${diff.oldHead1}`).removeClass("head up left down right");
+    $(`#${diff.oldHead1}`).addClass(
+      `${diff.oldHeadNextDir1} ${diff.oldHeadPrevDir1}`
+    );
+    $(`#${diff.newHead2}`).addClass(
+      `snake head ${diff.direction2} ${players.current.color2}`
+    );
+    $(`#${diff.oldHead2}`).removeClass("head up left down right");
+    $(`#${diff.oldHead2}`).addClass(
+      `${diff.oldHeadNextDir2} ${diff.oldHeadPrevDir2}`
+    );
+
+    if (diff.move1 === "move") {
+      $(`#${diff.oldTail1}`).removeClass(
+        `snake tail down left right up ${players.current.color1}`
+      );
+      $(`#${diff.newTail1}`).removeClass("down left right up");
+      $(`#${diff.newTail1}`).addClass(`tail ${diff.newTailNextDir1}`);
+    } else if (diff.move1 === "eat") {
+      $(`#${diff.oldFood1}`).removeClass(`food`);
+      $(`#${diff.newFood1}`).addClass(`food ${players.current.color1}`);
+      players.current.size1 = diff.size1;
     }
-    if (diff.food2) {
-      $(`#${diff.food2}`).removeClass(`food`);
-      $(`#${diff.newfood2}`).addClass(`food ${players.current.color2}`);
+
+    if (diff.move2 === "move") {
+      $(`#${diff.oldTail2}`).removeClass(
+        `snake tail down left right up ${players.current.color2}`
+      );
+      $(`#${diff.newTail2}`).removeClass("down left right up");
+      $(`#${diff.newTail2}`).addClass(`tail ${diff.newTailNextDir2}`);
+      
+    } else if (diff.move2 === "eat") {
+      $(`#${diff.oldFood2}`).removeClass(`food`);
+      $(`#${diff.newFood2}`).addClass(`food ${players.current.color2}`);
+      players.current.size2 = diff.size2;
     }
-    if (diff.size1) players.current.size1 = diff.size1;
-    if (diff.size2) players.current.size2 = diff.size2;
+
+    //eat
+    // $(`#${snake.head.id}`).removeClass("head left right up down");
+    // $(`#${snake.head.id}`).addClass(direction);
+
+    //move
+    // $(`#${snake.tail.id}`).removeClass(
+    //   "snake tail down left right up undefined"
+    // );
+    //move snake let dirs = snake.move(next.id, direction);
+    // $(`#${snake.tail.id}`).removeClass("down left right up");
+    // $(`#${snake.tail.id}`).addClass(`tail ${dirs.nextTailDir}`);
+
+    //both
+    // $(`#${snake.head.id}`).addClass(`snake head ${direction}`);
+    // $(`#${snake.head.tailward.id}`).removeClass("head up left down right");
+    // $(`#${snake.head.tailward.id}`).addClass(
+    //   `${snake.head.tailward.nextDir} ${snake.head.tailward.prevDir}`
+    // );
   };
 
   useEffect(() => {
