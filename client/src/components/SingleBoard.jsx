@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback, useContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useContext,
+  useRef
+} from "react";
 import $ from "jquery";
 import SnakeBoard from "../scripts/gameboardMaker";
 import Snake from "../scripts/snake";
@@ -17,23 +23,54 @@ const reset = (directionCB, foodCB, gameCB) => {
     board.set(id, "snake", false);
   });
   snake = new Snake([13, 38, 63, 88]);
-  gameCB(false);
+  gameCB(state => ++state);
 };
 
-const reverses = {
-  up: "down",
-  down: "up",
-  left: "right",
-  right: "left"
-};
+
 
 const SingleBoard = () => {
   const [food, setFood] = useState(newFood(board, snake));
   const oldFood = usePrev(food);
   const [directions, setDirections] = useState(["down"]);
   const [length, setLength] = useState(4);
-  const [gameOver, setGameOver] = useState(false);
-  const moveSnake = useCallback(() => {
+  const [gameOver, setGameOver] = useState(0);
+  // const gameOver = useRef(false);
+  // const moveSnake = useCallback(() => {
+  //   let direction = directions[0];
+  //   let next = board.get(snake.head.id).borders[direction];
+
+  //   let move = checkNextMove(next, food);
+
+  //   switch (move) {
+  //     case "lose":
+  //       setGameOver(state => true);
+  //       return false;
+  //     case "eat":
+  //       $(`#${snake.head.id}`).removeClass("head left right up down");
+  //       $(`#${snake.head.id}`).addClass(direction);
+  //       snake.eat(next.id, direction);
+  //       setLength(snake.size);
+  //       setFood(newFood(board));
+  //       break;
+  //     case "move":
+  //       board.set(snake.tail.id, "snake", false);
+  //       $(`#${snake.tail.id}`).removeClass(
+  //         "snake tail down left right up undefined"
+  //       );
+  //       let dirs = snake.move(next.id, direction);
+  //       $(`#${snake.tail.id}`).removeClass("down left right up");
+  //       $(`#${snake.tail.id}`).addClass(`tail ${dirs.nextTailDir}`);
+  //   }
+
+  //   board.set(snake.head.id, "snake", true);
+  //   $(`#${snake.head.id}`).addClass(`snake head ${direction}`);
+  //   $(`#${snake.head.tailward.id}`).removeClass("head up left down right");
+  //   $(`#${snake.head.tailward.id}`).addClass(
+  //     `${snake.head.tailward.nextDir} ${snake.head.tailward.prevDir}`
+  //   );
+  //   return true;
+  // }, [directions]);
+  let moveSnake = () => {
     let direction = directions[0];
     let next = board.get(snake.head.id).borders[direction];
 
@@ -41,8 +78,8 @@ const SingleBoard = () => {
 
     switch (move) {
       case "lose":
-        setGameOver(true);
-        return;
+        setGameOver(go => go + 1);
+        return false;
       case "eat":
         $(`#${snake.head.id}`).removeClass("head left right up down");
         $(`#${snake.head.id}`).addClass(direction);
@@ -52,28 +89,22 @@ const SingleBoard = () => {
         break;
       case "move":
         board.set(snake.tail.id, "snake", false);
-
-        // $(`#${snake.head.id}`).addClass(direction === snake.head.tailward.nextDir ? reverses[direction] : direction);
         $(`#${snake.tail.id}`).removeClass(
           "snake tail down left right up undefined"
         );
         let dirs = snake.move(next.id, direction);
         $(`#${snake.tail.id}`).removeClass("down left right up");
         $(`#${snake.tail.id}`).addClass(`tail ${dirs.nextTailDir}`);
-        
-      }
-      board.set(snake.head.id, "snake", true);
-      // if (prevHeadDir === direction)
-      $(`#${snake.head.id}`).addClass(
-        `snake head ${
-          /*prevHeadDir === direction ? reverses[direction] : prevHeadDir*/ direction
-        }`
-      );
-      $(`#${snake.head.tailward.id}`).removeClass("head up left down right");
-      $(`#${snake.head.tailward.id}`).addClass(
-        `${snake.head.tailward.nextDir} ${snake.head.tailward.prevDir}`
-      );
-  }, [directions]);
+    }
+
+    board.set(snake.head.id, "snake", true);
+    $(`#${snake.head.id}`).addClass(`snake head ${direction}`);
+    $(`#${snake.head.tailward.id}`).removeClass("head up left down right");
+    $(`#${snake.head.tailward.id}`).addClass(
+      `${snake.head.tailward.nextDir} ${snake.head.tailward.prevDir}`
+    );
+    return true;
+  }
   const keypressHandler = useCallback(
     e => {
       if (![37, 38, 39, 40].includes(e.keyCode)) return;
@@ -104,10 +135,10 @@ const SingleBoard = () => {
   useInterval(
     () => {
       moveSnake();
-      if (directions.length > 1) {
-        let newDirections = [...directions];
-        newDirections.shift();
-        setDirections(newDirections);
+        if (directions.length > 1) {
+          let newDirections = [...directions];
+          newDirections.shift();
+          setDirections(newDirections);
       }
     },
     gameOver ? null : 100
@@ -118,6 +149,9 @@ const SingleBoard = () => {
     if (oldFood) document.getElementById(oldFood).classList.remove("food");
   }, [food]);
 
+  useEffect(() => {
+    setGameOver(go => go++);
+  }, [gameOver])
   return (
     <div className="board">
       <div
