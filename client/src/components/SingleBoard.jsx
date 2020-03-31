@@ -23,7 +23,7 @@ const reset = (directionCB, foodCB, gameCB) => {
     board.set(id, "snake", false);
   });
   snake = new Snake([13, 38, 63, 88]);
-  gameCB(state => ++state);
+  gameCB(state => 0);
 };
 
 

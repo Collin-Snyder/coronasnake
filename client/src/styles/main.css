@@ -151,9 +151,8 @@ h1 {
   /* box-shadow: 1px 1px lightgray inset, -1px -1px lightgray inset; */
 }
 
-.food {
-  background-color: rgb(222, 53, 53);
-}
+
+
 
 .yellow,
 .snake.yellow {
@@ -270,6 +269,21 @@ h1 {
 
 /* SNAKE RENDERING CLASSES*/
 
+.food::after {
+  /* background-color: rgb(222, 53, 53); */
+  display: block;
+  content: "";
+  background-image: url("../assets/food-round.png");
+  background-size: 2vw 2vw;
+  background-repeat: no-repeat;
+  width: 2vw;
+  height: 2vw;
+  position: absolute;
+  bottom: 0;
+  /* left: 0; */
+  right: 0;
+}
+
 .snake::after {
   /* background-color: #36454f; */
   /* background-color: #009245; */
@@ -320,16 +334,16 @@ h1 {
 .snake.head.up::after {
   background-image: url("../assets/snake-segments/green-head-up.png");
   z-index: 100;
-  width: 2.16vw;
-  height: 2.88vw;
+  height: 2.16vw;
+  width: 2.88vw;
   bottom: 0;
   left: 0;
 }
 .snake.head.down::after {
   background-image: url("../assets/snake-segments/green-head-down.png");
   z-index: 100;
-  width: 2.16vw;
-  height: 2.88vw;
+  height: 2.16vw;
+  width: 2.88vw;
   top: 0;
   right: left;
 }
@@ -439,12 +453,21 @@ h1 {
     height: 1.4vw;
   }
   .snake.head.left::after,
-  .snake.head.right::after,
-  .snake.head.up::after,
-  .snake.head.down::after {
+  .snake.head.right::after{
     width: 1.68vw;
     height: 2.24vw;
   }
+  .snake.head.up::after,
+  .snake.head.down::after {
+    height: 1.68vw;
+    width: 2.24vw;
+  }
+  .food::after {
+    width: 1.6vw;
+    height: 1.6vw;
+    background-size: 1.6vw 1.6vw;
+  }
+  
 }
 
 @media only screen and (min-width: 720px) {
@@ -497,11 +520,21 @@ h1 {
   }
 
   .snake.head.left::after,
-  .snake.head.right::after,
-  .snake.head.up::after,
-  .snake.head.down::after {
+  .snake.head.right::after{
     width: 1.32vw;
     height: 1.76vw;
+  }
+
+  .snake.head.up::after,
+  .snake.head.down::after {
+    height: 1.32vw;
+    width: 1.76vw;
+  }
+
+  .food::after {
+    width: 1.2vw;
+    height: 1.2vw;
+    background-size: 1.2vw 1.2vw;
   }
 
   .colorOptions {
@@ -588,6 +621,12 @@ h1 {
   .snake.head.down::after {
     height: 0.96vw;
     width: 1.28vw;
+  }
+
+  .food::after {
+    width: 0.9vw;
+    height: 0.9vw;
+    background-size: 0.9vw 0.9vw;
   }
 
   .colorSelector {
