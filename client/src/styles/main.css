@@ -154,9 +154,9 @@ h1 {
 
 
 
-.yellow,
-.snake.yellow {
-  background-color: #c8aa00;
+.gray,
+.snake.gray {
+  background-color: #333333;
 }
 
 .green,
@@ -273,7 +273,7 @@ h1 {
   /* background-color: rgb(222, 53, 53); */
   display: block;
   content: "";
-  background-image: url("../assets/food-round.png");
+  background-image: url("../assets/food.png");
   background-size: 2vw 2vw;
   background-repeat: no-repeat;
   width: 2vw;
@@ -337,7 +337,7 @@ h1 {
   height: 2.16vw;
   width: 2.88vw;
   bottom: 0;
-  left: 0;
+  right: 0;
 }
 .snake.head.down::after {
   background-image: url("../assets/snake-segments/green-head-down.png");
@@ -347,20 +347,6 @@ h1 {
   top: 0;
   right: left;
 }
-/* .snake.up::after, .snake.down::after {
-  background-image: url("../assets/snake-segments/green-up-down.png");
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-}
-.snake.right::after, .snake.left::after {
-  background-image: url("../assets/snake-segments/green-left-right.png");
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-} */
 
 .snake.up.down::after {
   background-image: url("../assets/snake-segments/green-up-down.png");

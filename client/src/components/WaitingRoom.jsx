@@ -6,7 +6,7 @@ import axios from "axios";
 import { Socket } from "../App.jsx";
 import { PlayerContext } from "../contexts/PlayerContext";
 
-const colorOptions = ["yellow", "green", "pink", "blue", "red"];
+const colorOptions = ["gray", "green", "pink", "blue", "red"];
 
 const filterColors = (arr, color) => {
   return [...arr].filter(c => c === color);
