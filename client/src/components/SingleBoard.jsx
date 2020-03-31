@@ -168,7 +168,7 @@ const SingleBoard = () => {
         >
           <p className="buttonTitle">Play again?</p>
         </div>
-        <a href="http://localhost:4000/">
+        <a href="https://coronasnake.herokuapp.com/">
           <div
             className="homebutton gohome"
             onClick={() => {
