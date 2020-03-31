@@ -20,7 +20,6 @@ app.get("/", (req, res) => {
 });
 
 app.get("/games/:gameId", (req, res) => {
-  console.log(req.params.gameId);
   res.send(Games.getGame(req.params.gameId).getSummary());
 });
 
@@ -131,19 +130,17 @@ io.on("connection", socket => {
   });
 
   socket.on("begin movement", () => {
-    console.log("begin movement received");
     if (!interval && player === 1) {
       interval = setInterval(intervalCB, 100);
     }
   });
 
   socket.on("keypress", direction => {
-    console.log("inside keypress handler: ", direction);
     Games.getGame(gameId).keypress(player, direction);
   });
 
   socket.on("stop", () => {
-    console.log("receiving stop event");
+    console.log("receiving stop event")
     clearInterval(interval);
   });
 

@@ -12,7 +12,6 @@ import SnakeBoard from "../scripts/gameboardMaker";
 import Square from "./Square.jsx";
 import { Socket } from "../App.jsx";
 import { PlayerContext } from "../contexts/PlayerContext";
-import { newFood } from "../scripts/movement.js";
 
 const board = new SnakeBoard(50, 50);
 const codes = { 37: "left", 38: "up", 39: "right", 40: "down" };
@@ -31,19 +30,16 @@ const MultiBoard = () => {
   const [directions, setDirections] = useState({ 1: "up", 2: "down" });
   const keypressHandler = useCallback(
     e => {
-      console.log("keypress handler running");
 
       if (![37, 38, 39, 40].includes(e.keyCode) || gameStatus !== "playing")
         return;
 
       e.preventDefault();
 
-      console.log("keypress handler registers valid arrow key");
       if (
         ([37, 39].includes(e.keyCode) && !lat.includes(directions[player])) ||
         ([38, 40].includes(e.keyCode) && !long.includes(directions[player]))
       ) {
-        console.log("keypress registered: ", codes[e.keyCode]);
         setDirections({ ...directions, [player]: codes[e.keyCode] });
         socket.emit("keypress", codes[e.keyCode]);
       }
@@ -52,25 +48,6 @@ const MultiBoard = () => {
   );
 
   const handleInterval = (diff, players) => {
-    // if (diff.head1)
-    //   $(`#${diff.head1}`).addClass(`snake ${players.current.color1}`);
-    // if (diff.head2)
-    //   $(`#${diff.head2}`).addClass(`snake ${players.current.color2}`);
-    // if (diff.tail1)
-    //   $(`#${diff.tail1}`).removeClass(`snake ${players.current.color1}`);
-    // if (diff.tail2)
-    //   $(`#${diff.tail2}`).removeClass(`snake ${players.current.color2}`);
-    // if (diff.food1) {
-    //   $(`#${diff.food1}`).removeClass(`food`);
-    //   $(`#${diff.newfood1}`).addClass(`food ${players.current.color1}`);
-    // }
-    // if (diff.food2) {
-    //   $(`#${diff.food2}`).removeClass(`food`);
-    //   $(`#${diff.newfood2}`).addClass(`food ${players.current.color2}`);
-    // }
-    // if (diff.size1) players.current.size1 = diff.size1;
-    // if (diff.size2) players.current.size2 = diff.size2;
-
     $(`#${diff.newHead1}`).addClass(
       `snake head ${diff.direction1} ${players.current.color1}`
     );
@@ -110,25 +87,6 @@ const MultiBoard = () => {
       $(`#${diff.newFood2}`).addClass(`food ${players.current.color2}`);
       players.current.size2 = diff.size2;
     }
-
-    //eat
-    // $(`#${snake.head.id}`).removeClass("head left right up down");
-    // $(`#${snake.head.id}`).addClass(direction);
-
-    //move
-    // $(`#${snake.tail.id}`).removeClass(
-    //   "snake tail down left right up undefined"
-    // );
-    //move snake let dirs = snake.move(next.id, direction);
-    // $(`#${snake.tail.id}`).removeClass("down left right up");
-    // $(`#${snake.tail.id}`).addClass(`tail ${dirs.nextTailDir}`);
-
-    //both
-    // $(`#${snake.head.id}`).addClass(`snake head ${direction}`);
-    // $(`#${snake.head.tailward.id}`).removeClass("head up left down right");
-    // $(`#${snake.head.tailward.id}`).addClass(
-    //   `${snake.head.tailward.nextDir} ${snake.head.tailward.prevDir}`
-    // );
   };
 
   useEffect(() => {

@@ -6,7 +6,7 @@ import { PlayerContext } from "../contexts/PlayerContext";
 
 const GameSelector = () => {
   const socket = useContext(Socket);
-  const { player, setPlayer } = useContext(PlayerContext);
+  const { setPlayer } = useContext(PlayerContext);
   const [gameList, setGameList] = useState([]);
 
   useEffect(() => {
@@ -14,9 +14,9 @@ const GameSelector = () => {
       setGameList(data.data.filter(g => g.name1 && g.color1));
     });
 
-    socket.on("new game available", (gameInfo) => {
+    socket.on("new game available", gameInfo => {
       setGameList([...gameList, gameInfo]);
-    })
+    });
   }, []);
 
   return (
@@ -37,7 +37,9 @@ const GameSelector = () => {
                 <span className={`colorIcon ${g.color1}`}></span>
                 <div className="gameInfo">
                   <h3 className="gameName">Game with {g.name1}</h3>
-                  <p className="createdAt">Created {new Date(g.createdAt).toLocaleString()}</p>
+                  <p className="createdAt">
+                    Created {new Date(g.createdAt).toLocaleString()}
+                  </p>
                 </div>
               </li>
             </Link>

@@ -1,11 +1,9 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
 import { PlayerContext } from "../contexts/PlayerContext";
 
 const Home = () => {
-  const { player, setPlayer } = useContext(PlayerContext);
-  // const [multiOpen, setMultiOpen] = useState(false);
+  const { setPlayer } = useContext(PlayerContext);
 
   return (
     <div className="homeMenu flexCol">
@@ -17,11 +15,6 @@ const Home = () => {
           <p className="buttonTitle">Single Player</p>
         </div>
       </Link>
-      {/* <button onClick={() => setMultiOpen(!multiOpen)}>Multi Player</button> */}
-      {/* <div
-        className="multiplayerMenu flexCol"
-        style={{ display: multiOpen ? "flex" : "none" }}
-      > */}
       <Link to="/waitingroom/0" className="flex">
         <div
           className="homebutton newgame"
@@ -37,7 +30,6 @@ const Home = () => {
           <p className="buttonTitle">Join Existing Game</p>
         </div>
       </Link>
-      {/* </div> */}
     </div>
   );
 };

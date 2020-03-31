@@ -98,7 +98,6 @@ class Game {
       case "lose":
         return false;
       case "eat":
-        console.log("eating");
         let snakeInfoEat = snake.eat(next.id, currDir);
         let foodInfo = this.setNewFood(snakeId);
         info = {
