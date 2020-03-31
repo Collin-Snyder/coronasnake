@@ -37,7 +37,7 @@ const GameSelector = () => {
                 <span className={`colorIcon ${g.color1}`}></span>
                 <div className="gameInfo">
                   <h3 className="gameName">Game with {g.name1}</h3>
-                  <p>Created at {g.createdAt.toLocaleString()}</p>
+                  <p className="createdAt">Created {new Date(g.createdAt).toLocaleString()}</p>
                 </div>
               </li>
             </Link>

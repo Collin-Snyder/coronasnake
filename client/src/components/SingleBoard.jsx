@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useContext } from "react";
+import $ from "jquery";
 import SnakeBoard from "../scripts/gameboardMaker";
 import Snake from "../scripts/snake";
 import { checkNextMove, newFood } from "../scripts/movement";
@@ -19,6 +20,13 @@ const reset = (directionCB, foodCB, gameCB) => {
   gameCB(false);
 };
 
+const reverses = {
+  up: "down",
+  down: "up",
+  left: "right",
+  right: "left"
+};
+
 const SingleBoard = () => {
   const [food, setFood] = useState(newFood(board, snake));
   const oldFood = usePrev(food);
@@ -26,26 +34,45 @@ const SingleBoard = () => {
   const [length, setLength] = useState(4);
   const [gameOver, setGameOver] = useState(false);
   const moveSnake = useCallback(() => {
-    let next = board.get(snake.head.id).borders[directions[0]];
+    let direction = directions[0];
+    let next = board.get(snake.head.id).borders[direction];
 
-    let move = checkNextMove(next)(food);
+    let move = checkNextMove(next, food);
 
     switch (move) {
-      case null:
+      case "lose":
         setGameOver(true);
-        break;
+        return;
       case "eat":
-        snake.eat(next.id);
+        $(`#${snake.head.id}`).removeClass("head left right up down");
+        $(`#${snake.head.id}`).addClass(direction);
+        snake.eat(next.id, direction);
         setLength(snake.size);
-        setFood(newFood(board, snake));
+        setFood(newFood(board));
+        break;
       case "move":
         board.set(snake.tail.id, "snake", false);
-        document.getElementById(snake.tail.id).classList.remove("snake");
-        snake.move(next.id);
-      default:
-        board.set(snake.head.id, "snake", true);
-        document.getElementById(snake.head.id).classList.add("snake");
-    }
+
+        // $(`#${snake.head.id}`).addClass(direction === snake.head.tailward.nextDir ? reverses[direction] : direction);
+        $(`#${snake.tail.id}`).removeClass(
+          "snake tail down left right up undefined"
+        );
+        let dirs = snake.move(next.id, direction);
+        $(`#${snake.tail.id}`).removeClass("down left right up");
+        $(`#${snake.tail.id}`).addClass(`tail ${dirs.nextTailDir}`);
+        
+      }
+      board.set(snake.head.id, "snake", true);
+      // if (prevHeadDir === direction)
+      $(`#${snake.head.id}`).addClass(
+        `snake head ${
+          /*prevHeadDir === direction ? reverses[direction] : prevHeadDir*/ direction
+        }`
+      );
+      $(`#${snake.head.tailward.id}`).removeClass("head up left down right");
+      $(`#${snake.head.tailward.id}`).addClass(
+        `${snake.head.tailward.nextDir} ${snake.head.tailward.prevDir}`
+      );
   }, [directions]);
   const keypressHandler = useCallback(
     e => {
@@ -97,15 +124,26 @@ const SingleBoard = () => {
         className="gameover flexCol"
         style={{ display: gameOver ? "flex" : "none" }}
       >
-        <h1>YOU LOSE</h1>
-        <h3>Length: {length}</h3>
-        <button
+        <h1>GAME OVER</h1>
+        <h3 className="snakeLength">Length: {length}</h3>
+        <div
+          className="homebutton playagain"
           onClick={() => {
             reset(setDirections, setFood, setGameOver);
           }}
         >
-          Play again?
-        </button>
+          <p className="buttonTitle">Play again?</p>
+        </div>
+        <a href="http://localhost:4000/">
+          <div
+            className="homebutton gohome"
+            onClick={() => {
+              reset(setDirections, setFood, setGameOver);
+            }}
+          >
+            <p className="buttonTitle">Home</p>
+          </div>
+        </a>
       </div>
       {board.squares.map(s => (
         <Square id={s.id} key={s.id} />

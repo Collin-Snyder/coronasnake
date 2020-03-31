@@ -1,18 +1,15 @@
-export const checkNextMove = next => {
-  var gameOver = !next || next.snake ? true : false;
-  return food => {
-    if (gameOver) return null;
+export const checkNextMove = (next, food) => {
+  if (!next || next.snake) return "lose";
 
-    return next.id === food ? "eat" : "move";
-  };
+  return next.id === food ? "eat" : "move";
 };
 
-export const newFood = (board, snake) => {
-  let food = Math.ceil(Math.random() * board.squareCount);
+export const newFood = (board) => {
+  let food;
 
-  while (board.get(food).snake) {
+  do {
     food = Math.ceil(Math.random() * board.squareCount);
-  }
+  } while (board.get(food).snake);
 
   return food;
 };

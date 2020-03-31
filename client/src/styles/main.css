@@ -31,7 +31,9 @@ ul {
 }
 
 body {
-  background-color: #36454f;
+  /* background-color: #36444f; */
+  background-color: rgb(53, 94, 53);
+  font-family: "Press Start 2P", cursive;
 }
 
 h1 {
@@ -49,8 +51,10 @@ h1 {
   padding: 5vh;
   height: 85vh;
   width: 80vw;
-  border: 5px dashed black;
+  border: 3px dashed black;
   border-radius: 5vw;
+  /* background-color: rgb(24, 114, 250); */
+  background-color: rgb(203, 172, 119);
 }
 
 .logo {
@@ -92,7 +96,17 @@ h1 {
 
 .gameModule {
   width: 100vw;
-  justify-content: space-evenly;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-template-areas:
+    "board board"
+    "playerone playertwo";
+}
+
+.boardContainer {
+  grid-area: board;
 }
 
 .board {
@@ -101,6 +115,14 @@ h1 {
   grid-template-columns: repeat(50, 1fr);
   width: 90vw;
   position: relative;
+}
+
+.playerInfo.one {
+  grid-area: playerone;
+}
+
+.playerInfo.two {
+  grid-area: playertwo;
 }
 
 .gameover,
@@ -123,12 +145,9 @@ h1 {
 .square {
   width: 1.8vw;
   height: 1.8vw;
-  background-color: white;
-  box-shadow: 1px 1px lightgray inset, -1px -1px lightgray inset;
-}
-
-.snake {
-  background-color: #36454f;
+  background-color: rgb(203, 172, 119);
+  position: relative;
+  /* box-shadow: 1px 1px lightgray inset, -1px -1px lightgray inset; */
 }
 
 .food {
@@ -180,6 +199,10 @@ h1 {
   background-color: #ff6666;
 }
 
+.snakeLength {
+  font-size: 0.7em;
+}
+
 .waitingRoom,
 .gameSelector {
   color: white;
@@ -216,7 +239,7 @@ h1 {
 }
 
 .gameList {
-  width: 50vw;
+  width: 70vw;
 }
 
 .gameListItem {
@@ -227,6 +250,7 @@ h1 {
   padding: 2.2vw;
   align-items: center;
   margin-bottom: 2.2vw;
+  line-height: 1em;
 }
 
 .colorIcon {
@@ -235,6 +259,137 @@ h1 {
 
 .gameName {
   margin: 0;
+  line-height: 1em;
+  font-size: 1em;
+}
+
+.createdAt {
+  font-size: 0.5em;
+}
+
+/* SNAKE RENDERING CLASSES*/
+
+.snake::after {
+  /* background-color: #36454f; */
+  /* background-color: #009245; */
+  display: block;
+  content: "";
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: absolute;
+  width: 1.8vw;
+  height: 1.8vw;
+}
+
+.snake.tail {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.snake.tail.left::after {
+  background-image: url("../assets/snake-segments/green-tail-left.png");
+}
+.snake.tail.right::after {
+  background-image: url("../assets/snake-segments/green-tail-right.png");
+}
+.snake.tail.up::after {
+  background-image: url("../assets/snake-segments/green-tail-up.png");
+}
+.snake.tail.down::after {
+  background-image: url("../assets/snake-segments/green-tail-down.png");
+}
+.snake.head.left::after {
+  background-image: url("../assets/snake-segments/green-head-left.png");
+  z-index: 100;
+  width: 2.16vw;
+  height: 2.88vw;
+  bottom: 0;
+  right: 0;
+}
+.snake.head.right::after {
+  background-image: url("../assets/snake-segments/green-head-right.png");
+  z-index: 100;
+  width: 2.16vw;
+  height: 2.88vw;
+  bottom: 0;
+  left: 0;
+}
+.snake.head.up::after {
+  background-image: url("../assets/snake-segments/green-head-up.png");
+  z-index: 100;
+  width: 2.16vw;
+  height: 2.88vw;
+  bottom: 0;
+  left: 0;
+}
+.snake.head.down::after {
+  background-image: url("../assets/snake-segments/green-head-down.png");
+  z-index: 100;
+  width: 2.16vw;
+  height: 2.88vw;
+  top: 0;
+  right: left;
+}
+/* .snake.up::after, .snake.down::after {
+  background-image: url("../assets/snake-segments/green-up-down.png");
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+.snake.right::after, .snake.left::after {
+  background-image: url("../assets/snake-segments/green-left-right.png");
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+} */
+
+.snake.up.down::after {
+  background-image: url("../assets/snake-segments/green-up-down.png");
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.snake.right.left::after {
+  background-image: url("../assets/snake-segments/green-left-right.png");
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.snake.up.left::after {
+  background-image: url("../assets/snake-segments/green-up-left.png");
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+.snake.up.right::after {
+  background-image: url("../assets/snake-segments/green-up-right.png");
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+.snake.down.left::after {
+  background-image: url("../assets/snake-segments/green-down-left.png");
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+.snake.down.right::after {
+  background-image: url("../assets/snake-segments/green-down-right.png");
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
 
 @media only screen and (min-width: 568px) {
@@ -278,6 +433,17 @@ h1 {
     width: 1.4vw;
     height: 1.4vw;
   }
+  .snake::after {
+    width: 1.4vw;
+    height: 1.4vw;
+  }
+  .snake.head.left::after,
+  .snake.head.right::after,
+  .snake.head.up::after,
+  .snake.head.down::after {
+    width: 1.68vw;
+    height: 2.24vw;
+  }
 }
 
 @media only screen and (min-width: 720px) {
@@ -304,6 +470,12 @@ h1 {
     height: 28.28vw;
   }
 
+  .gameModule {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+  }
+
   .board {
     width: 55vw;
   }
@@ -317,6 +489,20 @@ h1 {
     width: 1.1vw;
     height: 1.1vw;
   }
+
+  .snake::after {
+    width: 1.1vw;
+    height: 1.1vw;
+  }
+
+  .snake.head.left::after,
+  .snake.head.right::after,
+  .snake.head.up::after,
+  .snake.head.down::after {
+    width: 1.32vw;
+    height: 1.76vw;
+  }
+
   .colorOptions {
     width: 65vw;
   }
@@ -384,7 +570,25 @@ h1 {
   .square {
     width: 0.8vw;
     height: 0.8vw;
+    position: relative;
   }
+  .snake::after {
+    width: 0.8vw;
+    height: 0.8vw;
+  }
+
+  .snake.head.left::after,
+  .snake.head.right::after{
+    width: 0.96vw;
+    height: 1.28vw;
+  }
+
+  .snake.head.up::after,
+  .snake.head.down::after {
+    height: 0.96vw;
+    width: 1.28vw;
+  }
+
   .colorSelector {
     padding-bottom: 20px;
   }

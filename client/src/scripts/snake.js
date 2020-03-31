@@ -1,3 +1,10 @@
+const reverses = {
+  up: "down",
+  down: "up",
+  left: "right",
+  right: "left"
+};
+
 class Snake {
   constructor(startVals = []) {
     this.head = null;
@@ -7,17 +14,23 @@ class Snake {
     startVals.forEach(v => this.addToHead(v));
   }
 
-  addToHead(id) {
+  addToHead(id, dir) {
     let node = new Node(id);
+    this.size++;
     if (!this.head) {
       this.head = node;
       this.tail = node;
+      this.head.prevDir = "up";
+      this.tail.nextDir = "down";
+      return "down";
     } else {
       this.head.headward = node;
+      this.head.nextDir = dir;
       node.tailward = this.head;
       this.head = node;
+      this.head.prevDir = reverses[dir];
+      return this.head.tailward.nextDir;
     }
-    this.size++;
   }
 
   removeFromTail() {
@@ -26,15 +39,17 @@ class Snake {
     oldTail.headward = null;
     this.tail.tailward = null;
     this.size--;
+    return this.tail.nextDir;
   }
 
-  move(id) {
-    this.addToHead(id);
-    this.removeFromTail();
+  move(id, dir) {
+    let prevHeadDir = this.addToHead(id, dir);
+    let nextTailDir = this.removeFromTail();
+    return {prevHeadDir, nextTailDir}
   }
 
-  eat(id) {
-    this.addToHead(id);
+  eat(id, dir) {
+    return this.addToHead(id, dir);
   }
 
   includes(id) {
@@ -69,6 +84,8 @@ const Node = function(id) {
   this.id = id;
   this.headward = null;
   this.tailward = null;
+  this.nextDir = "";
+  this.prevDir = "";
 };
 
 export default Snake;

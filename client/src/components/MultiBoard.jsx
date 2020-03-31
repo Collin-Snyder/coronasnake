@@ -178,54 +178,61 @@ const MultiBoard = () => {
   }, []);
 
   return (
-    <div className="gameModule flexRow">
+    <div className="gameModule flex">
       <div className="playerInfo one flexCol">
         <h3>{players.current.name1}</h3>
         <h1>{players.current.size1}</h1>
       </div>
-      <div className="board">
-        <div
-          className="getready flexCol"
-          style={{ display: gameStatus === "starting" ? "flex" : "none" }}
-        >
-          <h1>Get Ready</h1>
-        </div>
-        <div
-          className="countdown flexCol"
-          style={{ display: gameStatus === "countdown" ? "flex" : "none" }}
-        >
-          <h1>{countdown}</h1>
-        </div>
-        <div
-          className="gameover flexCol"
-          style={{ display: gameStatus === "over" ? "flex" : "none" }}
-        >
-          <h1>GAME OVER</h1>
-          {results.draw ? (
-            <h2>It's a draw.</h2>
-          ) : (
-            <h2>Winner: {players.current[`name${results.winner}`]}</h2>
-          )}
-
-          <h3>
-            {players.current.name1}'s Snake Length:{" "}
-            <strong>{players.current.size1}</strong>
-          </h3>
-          <h3>
-            {players.current.name2}'s Snake Length:{" "}
-            <strong>{players.current.size2}</strong>
-          </h3>
-          <button
-            onClick={() => {
-              socket.emit("play again");
-            }}
+      <div className="boardContainer flex">
+        <div className="board">
+          <div
+            className="getready flexCol"
+            style={{ display: gameStatus === "starting" ? "flex" : "none" }}
           >
-            Play again?
-          </button>
+            <h1>Get Ready</h1>
+          </div>
+          <div
+            className="countdown flexCol"
+            style={{ display: gameStatus === "countdown" ? "flex" : "none" }}
+          >
+            <h1>{countdown}</h1>
+          </div>
+          <div
+            className="gameover flexCol"
+            style={{ display: gameStatus === "over" ? "flex" : "none" }}
+          >
+            <h1>GAME OVER</h1>
+            {results.draw ? (
+              <h2>It's a draw.</h2>
+            ) : (
+              <h2>Winner: {players.current[`name${results.winner}`]}</h2>
+            )}
+
+            <h3 className="snakeLength">
+              {players.current.name1}'s Snake Length:{" "}
+              <strong>{players.current.size1}</strong>
+            </h3>
+            <h3 className="snakeLength">
+              {players.current.name2}'s Snake Length:{" "}
+              <strong>{players.current.size2}</strong>
+            </h3>
+            <button
+              onClick={() => {
+                socket.emit("play again");
+              }}
+            >
+              Play again?
+            </button>
+            <a href="http://localhost:4000/">
+              <div className="homebutton gohome">
+                <p className="buttonTitle">Home</p>
+              </div>
+            </a>
+          </div>
+          {board.squares.map(s => (
+            <Square id={s.id} key={s.id} />
+          ))}
         </div>
-        {board.squares.map(s => (
-          <Square id={s.id} key={s.id} />
-        ))}
       </div>
       <div className="playerInfo two flexCol">
         <h3>{players.current.name2}</h3>

@@ -27,14 +27,13 @@ const Home = () => {
           className="homebutton newgame"
           onClick={() => {
             setPlayer(1);
-            setMultiOpen(false);
           }}
         >
           <p className="buttonTitle">Start Multiplayer Game</p>
         </div>
       </Link>
       <Link to="/gamelist" className="flex">
-        <div className="homebutton joingame" onClick={() => setMultiOpen(false)}>
+        <div className="homebutton joingame">
           <p className="buttonTitle">Join Existing Game</p>
         </div>
       </Link>
