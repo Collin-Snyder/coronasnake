@@ -179,6 +179,8 @@ const deleteGame = id => {
 };
 
 const playAgain = (currentGameId, newGameId) => {
+  console.log(games);
+  console.log(currentGameId);
   let { name1, color1, name2, color2 } = games[currentGameId];
 
   games[newGameId].name1 = name1;
@@ -186,7 +188,7 @@ const playAgain = (currentGameId, newGameId) => {
   games[newGameId].color1 = color1;
   games[newGameId].color2 = color2;
 
-  deleteGame(currentGameId);
+  // deleteGame(currentGameId);
 
   return games[newGameId].getSummary();
 };

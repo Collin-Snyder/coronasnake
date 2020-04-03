@@ -78,6 +78,7 @@ io.on("connection", socket => {
       //if game not over, emit interval event with object containing 
       //differences between current game state and prev game state
       io.to(gameId).emit("interval", move);
+      // io.to(gameId).emit("snake",  {snake1: game.snake1.stringify(), snake2: game.snake2.stringify()})
     }
   };
 
@@ -146,6 +147,7 @@ io.on("connection", socket => {
 
   socket.on("play again", () => {
     let oldGameId = gameId;
+    console.log("gameId inside play again")
     let newGameId = Games.addGame({ createdAt: new Date() });
     Games.playAgain(gameId, newGameId);
     gameId = newGameId;
@@ -181,7 +183,9 @@ io.on("connection", socket => {
   socket.on("disconnect", () => {
     console.log("user disconnecting");
     io.to(gameId).emit("game ended");
-    Games.deleteGame(gameId);
+
+    socket.leave(gameId);
+    // Games.deleteGame(gameId);
     gameId = null;
     player = 0;
   });

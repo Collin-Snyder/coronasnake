@@ -51,10 +51,12 @@ h1 {
   padding: 5vh;
   height: 85vh;
   width: 80vw;
-  border: 3px dashed black;
+  /* border: 3px dotted black; */
   border-radius: 5vw;
   /* background-color: rgb(24, 114, 250); */
   background-color: rgb(203, 172, 119);
+  background-image: url("../assets/sand.png");
+  background-size: 1.8vw 1.8vw;
 }
 
 .logo {
@@ -146,7 +148,10 @@ h1 {
 .square {
   width: 1.8vw;
   height: 1.8vw;
-  background-color: rgb(203, 172, 119);
+  /* background-color: #cbac77; */
+  background-image: url("../assets/sand.png");
+  background-size: cover;
+  background-repeat: no-repeat;
   position: relative;
   /* box-shadow: 1px 1px lightgray inset, -1px -1px lightgray inset; */
 }
@@ -588,7 +593,7 @@ h1 {
     padding: 5vh;
     height: 85vh;
     width: 60vw;
-    border: 5px dashed black;
+    /* border: 5px dotted black; */
     border-radius: 5vw;
   }
 
@@ -646,7 +651,7 @@ h1 {
     padding: 5vh;
     height: 85vh;
     width: 60vw;
-    border: 5px dashed black;
+    /* border: 5px dotted black; */
     border-radius: 5vw;
   }
 
@@ -736,7 +741,7 @@ h1 {
     padding: 5vh;
     height: 85vh;
     width: 40vw;
-    border: 5px dashed black;
+    /* border: 5px dotted black; */
     border-radius: 5vw;
   }
 

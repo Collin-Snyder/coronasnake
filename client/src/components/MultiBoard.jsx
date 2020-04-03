@@ -121,13 +121,19 @@ const MultiBoard = () => {
       handleInterval(gameDiff, players);
     });
 
+    socket.on("snake", snakes => {
+      console.log(snakes);
+    }) 
+
     socket.on("game over", data => {
+      console.log("receiving game over event")
       setResults(data);
       setGameStatus("over");
     });
 
     socket.on("game ended", () => {
-      setGameStatus("over");
+      console.log("receiving game ended event")
+      setGameStatus("ended");
     });
 
     socket.on("join new game", newGameId => {
@@ -137,6 +143,8 @@ const MultiBoard = () => {
     socket.on("new game ready", newGameId => {
       setNewGameId(newGameId);
     });
+
+    return () => {socket.emit("disconnect")}
   }, [players, setNewGameId]);
 
   useEffect(() => {
@@ -180,15 +188,14 @@ const MultiBoard = () => {
           </div>
           <div
             className="gameover flexCol"
-            style={{ display: gameStatus === "over" ? "flex" : "none" }}
+            style={{ display: gameStatus === "over" || gameStatus === "ended" ? "flex" : "none" }}
           >
-            <h1>GAME OVER</h1>
+            {gameStatus === "over" ? <h1>GAME OVER</h1> : <h1>Game ended.</h1>} 
             {results.draw ? (
               <h2>It's a draw.</h2>
             ) : (
               <h2>Winner: {players.current[`name${results.winner}`]}</h2>
             )}
-
             <h3 className="snakeLength">
               {players.current.name1}'s Snake Length:{" "}
               <strong>{players.current.size1}</strong>
@@ -198,6 +205,7 @@ const MultiBoard = () => {
               <strong>{players.current.size2}</strong>
             </h3>
             <button
+            style={{display: gameStatus === "over" ? "block" : "none"}}
               onClick={() => {
                 socket.emit("play again");
               }}
