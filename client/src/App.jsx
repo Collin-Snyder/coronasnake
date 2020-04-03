@@ -9,8 +9,8 @@ import WaitingRoom from "./components/WaitingRoom.jsx";
 import GameSelector from "./components/GameSelector.jsx";
 import io from "socket.io-client";
 
-// const socket = io("https://coronasnake.herokuapp.com/");
-const socket = io("localhost:4000");
+const socket = io("https://coronasnake.herokuapp.com/");
+// const socket = io("localhost:4000");
 export const Socket = createContext();
 
 const App = () => {
