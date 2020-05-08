@@ -51,10 +51,12 @@ h1 {
   padding: 5vh;
   height: 85vh;
   width: 80vw;
-  border: 3px dashed black;
+  /* border: 3px dotted black; */
   border-radius: 5vw;
   /* background-color: rgb(24, 114, 250); */
   background-color: rgb(203, 172, 119);
+  background-image: url("../assets/sand.png");
+  background-size: 1.8vw 1.8vw;
 }
 
 .logo {
@@ -146,41 +148,37 @@ h1 {
 .square {
   width: 1.8vw;
   height: 1.8vw;
-  background-color: rgb(203, 172, 119);
+  /* background-color: #cbac77; */
+  background-image: url("../assets/sand.png");
+  background-size: cover;
+  background-repeat: no-repeat;
   position: relative;
   /* box-shadow: 1px 1px lightgray inset, -1px -1px lightgray inset; */
 }
 
-
-
-
-.yellow,
-.snake.yellow {
-  background-color: #c8aa00;
+.colorOption.gray,
+.colorIcon.gray {
+  background-color: #333333;
 }
 
-.green,
-.snake.green {
+.colorOption.green,
+.colorIcon.green {
   background-color: #349a34;
 }
 
-.pink,
-.snake.pink {
+.colorOption.pink,
+.colorIcon.pink {
   background-color: #c862c8;
 }
 
-.blue,
-.snake.blue {
+.colorOption.blue,
+.colorIcon.blue {
   background-color: #0095c8;
 }
 
-.red,
-.snake.red {
+.colorOption.red,
+.colorIcon.red {
   background-color: #cc3c3c;
-}
-
-.food.yellow {
-  background-color: #ffe115;
 }
 
 .food.green {
@@ -273,7 +271,7 @@ h1 {
   /* background-color: rgb(222, 53, 53); */
   display: block;
   content: "";
-  background-image: url("../assets/food-round.png");
+  background-image: url("../assets/food.png");
   background-size: 2vw 2vw;
   background-repeat: no-repeat;
   width: 2vw;
@@ -302,6 +300,8 @@ h1 {
   bottom: 0;
   right: 0;
 }
+
+/***** SINGLE PLAYER SNAKE AND GREEN SNAKE *****/
 
 .snake.tail.left::after {
   background-image: url("../assets/snake-segments/green-tail-left.png");
@@ -337,7 +337,7 @@ h1 {
   height: 2.16vw;
   width: 2.88vw;
   bottom: 0;
-  left: 0;
+  right: 0;
 }
 .snake.head.down::after {
   background-image: url("../assets/snake-segments/green-head-down.png");
@@ -347,20 +347,6 @@ h1 {
   top: 0;
   right: left;
 }
-/* .snake.up::after, .snake.down::after {
-  background-image: url("../assets/snake-segments/green-up-down.png");
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-}
-.snake.right::after, .snake.left::after {
-  background-image: url("../assets/snake-segments/green-left-right.png");
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-} */
 
 .snake.up.down::after {
   background-image: url("../assets/snake-segments/green-up-down.png");
@@ -407,12 +393,207 @@ h1 {
   right: 0;
 }
 
+.food.green::after {
+  background-image: url("../assets/green-food.png");
+}
+
+/***** BLUE SNAKE *****/
+
+.snake.tail.left.blue::after {
+  background-image: url("../assets/snake-segments/blue-tail-left.png");
+}
+.snake.tail.right.blue::after {
+  background-image: url("../assets/snake-segments/blue-tail-right.png");
+}
+.snake.tail.up.blue::after {
+  background-image: url("../assets/snake-segments/blue-tail-up.png");
+}
+.snake.tail.down.blue::after {
+  background-image: url("../assets/snake-segments/blue-tail-down.png");
+}
+.snake.head.left.blue::after {
+  background-image: url("../assets/snake-segments/blue-head-left.png");
+}
+.snake.head.right.blue::after {
+  background-image: url("../assets/snake-segments/blue-head-right.png");
+}
+.snake.head.up.blue::after {
+  background-image: url("../assets/snake-segments/blue-head-up.png");
+}
+.snake.head.down.blue::after {
+  background-image: url("../assets/snake-segments/blue-head-down.png");
+}
+.snake.up.down.blue::after {
+  background-image: url("../assets/snake-segments/blue-up-down.png");
+}
+.snake.right.left.blue::after {
+  background-image: url("../assets/snake-segments/blue-left-right.png");
+}
+.snake.up.left.blue::after {
+  background-image: url("../assets/snake-segments/blue-up-left.png");
+}
+.snake.up.right.blue::after {
+  background-image: url("../assets/snake-segments/blue-up-right.png");
+}
+.snake.down.left.blue::after {
+  background-image: url("../assets/snake-segments/blue-down-left.png");
+}
+.snake.down.right.blue::after {
+  background-image: url("../assets/snake-segments/blue-down-right.png");
+}
+.food.blue::after {
+  background-image: url("../assets/blue-food.png");
+}
+
+/***** RED SNAKE *****/
+.snake.tail.left.red::after {
+  background-image: url("../assets/snake-segments/red-tail-left.png");
+}
+.snake.tail.right.red::after {
+  background-image: url("../assets/snake-segments/red-tail-right.png");
+}
+.snake.tail.up.red::after {
+  background-image: url("../assets/snake-segments/red-tail-up.png");
+}
+.snake.tail.down.red::after {
+  background-image: url("../assets/snake-segments/red-tail-down.png");
+}
+.snake.head.left.red::after {
+  background-image: url("../assets/snake-segments/red-head-left.png");
+}
+.snake.head.right.red::after {
+  background-image: url("../assets/snake-segments/red-head-right.png");
+}
+.snake.head.up.red::after {
+  background-image: url("../assets/snake-segments/red-head-up.png");
+}
+.snake.head.down.red::after {
+  background-image: url("../assets/snake-segments/red-head-down.png");
+}
+.snake.up.down.red::after {
+  background-image: url("../assets/snake-segments/red-up-down.png");
+}
+.snake.right.left.red::after {
+  background-image: url("../assets/snake-segments/red-left-right.png");
+}
+.snake.up.left.red::after {
+  background-image: url("../assets/snake-segments/red-up-left.png");
+}
+.snake.up.right.red::after {
+  background-image: url("../assets/snake-segments/red-up-right.png");
+}
+.snake.down.left.red::after {
+  background-image: url("../assets/snake-segments/red-down-left.png");
+}
+.snake.down.right.red::after {
+  background-image: url("../assets/snake-segments/red-down-right.png");
+}
+
+.food.red::after {
+  background-image: url("../assets/red-food.png");
+}
+
+/***** PINK SNAKE *****/
+
+.snake.tail.left.pink::after {
+  background-image: url("../assets/snake-segments/pink-tail-left.png");
+}
+.snake.tail.right.pink::after {
+  background-image: url("../assets/snake-segments/pink-tail-right.png");
+}
+.snake.tail.up.pink::after {
+  background-image: url("../assets/snake-segments/pink-tail-up.png");
+}
+.snake.tail.down.pink::after {
+  background-image: url("../assets/snake-segments/pink-tail-down.png");
+}
+.snake.head.left.pink::after {
+  background-image: url("../assets/snake-segments/pink-head-left.png");
+}
+.snake.head.right.pink::after {
+  background-image: url("../assets/snake-segments/pink-head-right.png");
+}
+.snake.head.up.pink::after {
+  background-image: url("../assets/snake-segments/pink-head-up.png");
+}
+.snake.head.down.pink::after {
+  background-image: url("../assets/snake-segments/pink-head-down.png");
+}
+.snake.up.down.pink::after {
+  background-image: url("../assets/snake-segments/pink-up-down.png");
+}
+.snake.right.left.pink::after {
+  background-image: url("../assets/snake-segments/pink-left-right.png");
+}
+.snake.up.left.pink::after {
+  background-image: url("../assets/snake-segments/pink-up-left.png");
+}
+.snake.up.right.pink::after {
+  background-image: url("../assets/snake-segments/pink-up-right.png");
+}
+.snake.down.left.pink::after {
+  background-image: url("../assets/snake-segments/pink-down-left.png");
+}
+.snake.down.right.pink::after {
+  background-image: url("../assets/snake-segments/pink-down-right.png");
+}
+.food.pink::after {
+  background-image: url("../assets/pink-food.png");
+}
+/***** GRAY SNAKE *****/
+
+.snake.tail.left.gray::after {
+  background-image: url("../assets/snake-segments/gray-tail-left.png");
+}
+.snake.tail.right.gray::after {
+  background-image: url("../assets/snake-segments/gray-tail-right.png");
+}
+.snake.tail.up.gray::after {
+  background-image: url("../assets/snake-segments/gray-tail-up.png");
+}
+.snake.tail.down.gray::after {
+  background-image: url("../assets/snake-segments/gray-tail-down.png");
+}
+.snake.head.left.gray::after {
+  background-image: url("../assets/snake-segments/gray-head-left.png");
+}
+.snake.head.right.gray::after {
+  background-image: url("../assets/snake-segments/gray-head-right.png");
+}
+.snake.head.up.gray::after {
+  background-image: url("../assets/snake-segments/gray-head-up.png");
+}
+.snake.head.down.gray::after {
+  background-image: url("../assets/snake-segments/gray-head-down.png");
+}
+.snake.up.down.gray::after {
+  background-image: url("../assets/snake-segments/gray-up-down.png");
+}
+.snake.right.left.gray::after {
+  background-image: url("../assets/snake-segments/gray-left-right.png");
+}
+.snake.up.left.gray::after {
+  background-image: url("../assets/snake-segments/gray-up-left.png");
+}
+.snake.up.right.gray::after {
+  background-image: url("../assets/snake-segments/gray-up-right.png");
+}
+.snake.down.left.gray::after {
+  background-image: url("../assets/snake-segments/gray-down-left.png");
+}
+.snake.down.right.gray::after {
+  background-image: url("../assets/snake-segments/gray-down-right.png");
+}
+.food.gray::after {
+  background-image: url("../assets/gray-food.png");
+}
+
 @media only screen and (min-width: 568px) {
   .homeMenu {
     padding: 5vh;
     height: 85vh;
     width: 60vw;
-    border: 5px dashed black;
+    /* border: 5px dotted black; */
     border-radius: 5vw;
   }
 
@@ -430,10 +611,6 @@ h1 {
     width: 55vw;
     height: 34.57vw;
   }
-  /* .logo {
-    width: 70vw;
-    height: 44vw;
-  } */
 
   .board {
     width: 70vw;
@@ -453,7 +630,7 @@ h1 {
     height: 1.4vw;
   }
   .snake.head.left::after,
-  .snake.head.right::after{
+  .snake.head.right::after {
     width: 1.68vw;
     height: 2.24vw;
   }
@@ -467,7 +644,6 @@ h1 {
     height: 1.6vw;
     background-size: 1.6vw 1.6vw;
   }
-  
 }
 
 @media only screen and (min-width: 720px) {
@@ -475,7 +651,7 @@ h1 {
     padding: 5vh;
     height: 85vh;
     width: 60vw;
-    border: 5px dashed black;
+    /* border: 5px dotted black; */
     border-radius: 5vw;
   }
 
@@ -520,7 +696,7 @@ h1 {
   }
 
   .snake.head.left::after,
-  .snake.head.right::after{
+  .snake.head.right::after {
     width: 1.32vw;
     height: 1.76vw;
   }
@@ -565,7 +741,7 @@ h1 {
     padding: 5vh;
     height: 85vh;
     width: 40vw;
-    border: 5px dashed black;
+    /* border: 5px dotted black; */
     border-radius: 5vw;
   }
 
@@ -612,7 +788,7 @@ h1 {
   }
 
   .snake.head.left::after,
-  .snake.head.right::after{
+  .snake.head.right::after {
     width: 0.96vw;
     height: 1.28vw;
   }

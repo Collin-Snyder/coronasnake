@@ -20,7 +20,6 @@ app.get("/", (req, res) => {
 });
 
 app.get("/games/:gameId", (req, res) => {
-  console.log(req.params.gameId);
   res.send(Games.getGame(req.params.gameId).getSummary());
 });
 
@@ -45,7 +44,7 @@ app
 var http = require("http").createServer(app);
 const io = require("socket.io")(http);
 
-io.on("connection", socket => {
+io.on("connection", (socket) => {
   console.log("a user connected");
   let interval;
   let gameId = null;
@@ -55,7 +54,7 @@ io.on("connection", socket => {
     //pull from each direction queue and move snake
     let game = Games.getGame(gameId);
 
-    //evaluates to either a string describing the winner/if it's a draw 
+    //evaluates to either a string describing the winner/if it's a draw
     //or an object of game state diffs to send to client
     let move = game.moveSnakes();
 
@@ -64,7 +63,7 @@ io.on("connection", socket => {
       let gameOverStats = {
         draw: false,
         winner: 0,
-        loser: 0
+        loser: 0,
       };
       //if game over, emit game over event along with winner/loser
       if (move === "draw") {
@@ -76,9 +75,10 @@ io.on("connection", socket => {
       }
       io.to(gameId).emit("game over", gameOverStats);
     } else {
-      //if game not over, emit interval event with object containing 
+      //if game not over, emit interval event with object containing
       //differences between current game state and prev game state
       io.to(gameId).emit("interval", move);
+      // io.to(gameId).emit("snake",  {snake1: game.snake1.stringify(), snake2: game.snake2.stringify()})
     }
   };
 
@@ -98,19 +98,19 @@ io.on("connection", socket => {
     setTimeout(() => {
       io.to(gameId).emit("start", {
         food1: Games.getGame(gameId).food1,
-        food2: Games.getGame(gameId).food2
+        food2: Games.getGame(gameId).food2,
       });
     }, 7000);
   };
 
-  socket.on("new game", id => {
+  socket.on("new game", (id) => {
     gameId = id;
     player = 1;
     socket.join(gameId);
     io.to(gameId).emit("new game confirmation", gameId);
   });
 
-  socket.on("player joining", id => {
+  socket.on("player joining", (id) => {
     gameId = id;
     player = 2;
     socket.join(gameId);
@@ -118,7 +118,7 @@ io.on("connection", socket => {
     io.to(gameId).emit("player 2 joining confirmation", gameId);
   });
 
-  socket.on("player ready", info => {
+  socket.on("player ready", (info) => {
     if (player === 2) info.status = "starting";
     Games.getGame(gameId).update(info);
     if (player === 1)
@@ -126,19 +126,17 @@ io.on("connection", socket => {
     io.to(gameId).emit(`player ${player} confirmation`);
   });
 
-  socket.on("game starting", id => {
+  socket.on("game starting", (id) => {
     countdown();
   });
 
   socket.on("begin movement", () => {
-    console.log("begin movement received");
     if (!interval && player === 1) {
       interval = setInterval(intervalCB, 100);
     }
   });
 
-  socket.on("keypress", direction => {
-    console.log("inside keypress handler: ", direction);
+  socket.on("keypress", (direction) => {
     Games.getGame(gameId).keypress(player, direction);
   });
 
@@ -149,13 +147,14 @@ io.on("connection", socket => {
 
   socket.on("play again", () => {
     let oldGameId = gameId;
+    console.log("gameId inside play again");
     let newGameId = Games.addGame({ createdAt: new Date() });
     Games.playAgain(gameId, newGameId);
     gameId = newGameId;
-    socket.leave(oldGameId, err => {
+    socket.leave(oldGameId, (err) => {
       if (err) io.emit("error", "error leaving previous game");
       else
-        socket.join(newGameId, err => {
+        socket.join(newGameId, (err) => {
           if (err) io.emit("error", "new game could not be joined");
           else {
             if (interval) clearInterval(interval);
@@ -166,11 +165,11 @@ io.on("connection", socket => {
     });
   });
 
-  socket.on("joined new game", newId => {
-    socket.leave(gameId, err => {
+  socket.on("joined new game", (newId) => {
+    socket.leave(gameId, (err) => {
       if (err) io.emit("error", "error leaving previous game");
       else gameId = newId;
-      socket.join(newId, err => {
+      socket.join(newId, (err) => {
         if (err) io.emit("error", "new game could not be joined");
         else {
           if (interval) clearInterval(interval);
@@ -184,7 +183,9 @@ io.on("connection", socket => {
   socket.on("disconnect", () => {
     console.log("user disconnecting");
     io.to(gameId).emit("game ended");
-    Games.deleteGame(gameId);
+
+    socket.leave(gameId);
+    // Games.deleteGame(gameId);
     gameId = null;
     player = 0;
   });

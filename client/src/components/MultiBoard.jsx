@@ -12,7 +12,6 @@ import SnakeBoard from "../scripts/gameboardMaker";
 import Square from "./Square.jsx";
 import { Socket } from "../App.jsx";
 import { PlayerContext } from "../contexts/PlayerContext";
-import { newFood } from "../scripts/movement.js";
 
 const board = new SnakeBoard(50, 50);
 const codes = { 37: "left", 38: "up", 39: "right", 40: "down" };
@@ -31,19 +30,16 @@ const MultiBoard = () => {
   const [directions, setDirections] = useState({ 1: "up", 2: "down" });
   const keypressHandler = useCallback(
     e => {
-      console.log("keypress handler running");
 
       if (![37, 38, 39, 40].includes(e.keyCode) || gameStatus !== "playing")
         return;
 
       e.preventDefault();
 
-      console.log("keypress handler registers valid arrow key");
       if (
         ([37, 39].includes(e.keyCode) && !lat.includes(directions[player])) ||
         ([38, 40].includes(e.keyCode) && !long.includes(directions[player]))
       ) {
-        console.log("keypress registered: ", codes[e.keyCode]);
         setDirections({ ...directions, [player]: codes[e.keyCode] });
         socket.emit("keypress", codes[e.keyCode]);
       }
@@ -51,61 +47,46 @@ const MultiBoard = () => {
     [gameStatus, directions]
   );
 
-  // const handleInterval = (game, players, snakes, food) => {
-  //   if (game.head1 !== snakes.current.head1)
-  //     $(`#${game.head1}`).addClass(`snake ${players.current.color1}`);
-  //   if (game.head2 !== snakes.current.head2)
-  //     $(`#${game.head2}`).addClass(`snake ${players.current.color2}`);
-  //   if (game.tail1 !== snakes.current.tail1)
-  //     $(`#${game.tail1}`).removeClass(`snake ${players.current.color1}`);
-  //   if (game.tail2 !== snakes.current.tail2)
-  //     $(`#${game.tail2}`).removeClass(`snake ${players.current.color2}`);
-
-  //   let newSnakes = {
-  //     head1: game.head1,
-  //     head2: game.head2,
-  //     tail1: game.tail1,
-  //     tail2: game.tail2,
-  //     length1: game.length1,
-  //     length2: game.length2
-  //   };
-
-  //   if (game.food1 !== food.current.food1) {
-  //     $(`#${food.current.food1}`).removeClass(`food ${players.current.color1}`);
-  //     $(`#${game.food1}`).addClass(`food ${players.current.color1}`);
-  //   }
-  //   if (game.food2 !== food.current.food2) {
-  //     $(`#${food.current.food2}`).removeClass(`food ${players.current.color2}`);
-  //     $(`#${game.food2}`).addClass(`food ${players.current.color2}`);
-  //   }
-
-  //   let newFood = {
-  //     food1: game.food1,
-  //     food2: game.food2
-  //   };
-
-  //   snakes.current = newSnakes;
-  //   food.current = newFood;
-  // };
   const handleInterval = (diff, players) => {
-    if (diff.head1)
-      $(`#${diff.head1}`).addClass(`snake ${players.current.color1}`);
-    if (diff.head2)
-      $(`#${diff.head2}`).addClass(`snake ${players.current.color2}`);
-    if (diff.tail1)
-      $(`#${diff.tail1}`).removeClass(`snake ${players.current.color1}`);
-    if (diff.tail2)
-      $(`#${diff.tail2}`).removeClass(`snake ${players.current.color2}`);
-    if (diff.food1) {
-      $(`#${diff.food1}`).removeClass(`food`);
-      $(`#${diff.newfood1}`).addClass(`food ${players.current.color1}`);
+    $(`#${diff.newHead1}`).addClass(
+      `snake head ${diff.direction1} ${players.current.color1}`
+    );
+    $(`#${diff.oldHead1}`).removeClass("head up left down right");
+    $(`#${diff.oldHead1}`).addClass(
+      `${diff.oldHeadNextDir1} ${diff.oldHeadPrevDir1}`
+    );
+    $(`#${diff.newHead2}`).addClass(
+      `snake head ${diff.direction2} ${players.current.color2}`
+    );
+    $(`#${diff.oldHead2}`).removeClass("head up left down right");
+    $(`#${diff.oldHead2}`).addClass(
+      `${diff.oldHeadNextDir2} ${diff.oldHeadPrevDir2}`
+    );
+
+    if (diff.move1 === "move") {
+      $(`#${diff.oldTail1}`).removeClass(
+        `snake tail down left right up ${players.current.color1}`
+      );
+      $(`#${diff.newTail1}`).removeClass("down left right up");
+      $(`#${diff.newTail1}`).addClass(`tail ${diff.newTailNextDir1}`);
+    } else if (diff.move1 === "eat") {
+      $(`#${diff.oldFood1}`).removeClass(`food`);
+      $(`#${diff.newFood1}`).addClass(`food ${players.current.color1}`);
+      players.current.size1 = diff.size1;
     }
-    if (diff.food2) {
-      $(`#${diff.food2}`).removeClass(`food`);
-      $(`#${diff.newfood2}`).addClass(`food ${players.current.color2}`);
+
+    if (diff.move2 === "move") {
+      $(`#${diff.oldTail2}`).removeClass(
+        `snake tail down left right up ${players.current.color2}`
+      );
+      $(`#${diff.newTail2}`).removeClass("down left right up");
+      $(`#${diff.newTail2}`).addClass(`tail ${diff.newTailNextDir2}`);
+      
+    } else if (diff.move2 === "eat") {
+      $(`#${diff.oldFood2}`).removeClass(`food`);
+      $(`#${diff.newFood2}`).addClass(`food ${players.current.color2}`);
+      players.current.size2 = diff.size2;
     }
-    if (diff.size1) players.current.size1 = diff.size1;
-    if (diff.size2) players.current.size2 = diff.size2;
   };
 
   useEffect(() => {
@@ -140,13 +121,19 @@ const MultiBoard = () => {
       handleInterval(gameDiff, players);
     });
 
+    socket.on("snake", snakes => {
+      console.log(snakes);
+    }) 
+
     socket.on("game over", data => {
+      console.log("receiving game over event")
       setResults(data);
       setGameStatus("over");
     });
 
     socket.on("game ended", () => {
-      setGameStatus("over");
+      console.log("receiving game ended event")
+      setGameStatus("ended");
     });
 
     socket.on("join new game", newGameId => {
@@ -156,6 +143,8 @@ const MultiBoard = () => {
     socket.on("new game ready", newGameId => {
       setNewGameId(newGameId);
     });
+
+    return () => {socket.emit("disconnect")}
   }, [players, setNewGameId]);
 
   useEffect(() => {
@@ -199,15 +188,14 @@ const MultiBoard = () => {
           </div>
           <div
             className="gameover flexCol"
-            style={{ display: gameStatus === "over" ? "flex" : "none" }}
+            style={{ display: gameStatus === "over" || gameStatus === "ended" ? "flex" : "none" }}
           >
-            <h1>GAME OVER</h1>
+            {gameStatus === "over" ? <h1>GAME OVER</h1> : <h1>Game ended.</h1>} 
             {results.draw ? (
               <h2>It's a draw.</h2>
             ) : (
               <h2>Winner: {players.current[`name${results.winner}`]}</h2>
             )}
-
             <h3 className="snakeLength">
               {players.current.name1}'s Snake Length:{" "}
               <strong>{players.current.size1}</strong>
@@ -217,13 +205,15 @@ const MultiBoard = () => {
               <strong>{players.current.size2}</strong>
             </h3>
             <button
+            style={{display: gameStatus === "over" ? "block" : "none"}}
               onClick={() => {
                 socket.emit("play again");
               }}
             >
               Play again?
             </button>
-            <a href="http://localhost:4000/">
+            <a href="https://coronasnake.herokuapp.com/">
+            {/* <a href="http://localhost:4000"> */}
               <div className="homebutton gohome">
                 <p className="buttonTitle">Home</p>
               </div>

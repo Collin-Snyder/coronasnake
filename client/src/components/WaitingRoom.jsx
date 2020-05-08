@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import {browserHistory} from "react-router"
-import { Redirect, useParams, Link } from "react-router-dom";
+import { Redirect, useParams } from "react-router-dom";
 import $ from "jquery";
 import axios from "axios";
 import { Socket } from "../App.jsx";
 import { PlayerContext } from "../contexts/PlayerContext";
 
-const colorOptions = ["yellow", "green", "pink", "blue", "red"];
+const colorOptions = ["gray", "green", "pink", "blue", "red"];
 
 const filterColors = (arr, color) => {
   return [...arr].filter(c => c === color);
@@ -19,7 +18,7 @@ const removeColor = (arr, color) => {
 const WaitingRoom = () => {
   const socket = useContext(Socket);
   const id = useParams().gameId.length > 1 ? useParams().gameId : 0;
-  const { player, setPlayer } = useContext(PlayerContext);
+  const { player } = useContext(PlayerContext);
   const [gameId, setGameId] = useState(id);
   const [colors, setColors] = useState([]);
   const [nameValue, setNameValue] = useState("");
@@ -31,13 +30,12 @@ const WaitingRoom = () => {
     socket.on("player 1 confirmation", data => {
       console.log("player 1 confirmed!");
     });
-  
+
     socket.on("player 2 confirmation", data => {
       console.log("player 2 confirmed!");
       setGameReady(true);
     });
-  }, [])
-
+  }, []);
 
   useEffect(() => {
     //if new game, automatically create a new game and store the gameId

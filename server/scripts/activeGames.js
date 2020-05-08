@@ -86,8 +86,9 @@ class Game {
   moveSnake(snakeId) {
     let snake = this[`snake${snakeId}`];
     let directions = this.queues[snakeId];
+    let currDir = directions[0];
     let food = this[`food${snakeId}`];
-    let next = this.board.get(snake.head.id).borders[directions[0]];
+    let next = this.board.get(snake.head.id).borders[currDir];
 
     if (directions.length > 1) directions.shift();
     let move = this.checkNextMove(next, food);
@@ -97,26 +98,36 @@ class Game {
       case "lose":
         return false;
       case "eat":
-        console.log("eating");
-        let snakeInfoEat = snake.eat(next.id);
+        let snakeInfoEat = snake.eat(next.id, currDir);
         let foodInfo = this.setNewFood(snakeId);
         info = {
-          [`head${snakeId}`]: snakeInfoEat.head,
-          [`food${snakeId}`]: foodInfo.oldFood,
-          [`newfood${snakeId}`]: foodInfo.newFood,
+          [`move${snakeId}`]: "eat",
+          [`newHead${snakeId}`]: snakeInfoEat.newHead,
+          [`oldHead${snakeId}`]: snakeInfoEat.oldHead,
+          [`oldHeadNextDir${snakeId}`]: snakeInfoEat.oldHeadNextDir,
+          [`oldHeadPrevDir${snakeId}`]: snakeInfoEat.oldHeadPrevDir,
+          [`oldFood${snakeId}`]: foodInfo.oldFood,
+          [`newFood${snakeId}`]: foodInfo.newFood,
           [`size${snakeId}`]: snakeInfoEat.size
         };
         break;
       case "move":
         this.board.set(snake.tail.id, "snake", false);
-        let snakeInfoMove = snake.move(next.id);
+        let snakeInfoMove = snake.move(next.id, currDir);
         info = {
-          [`head${snakeId}`]: snakeInfoMove.head,
-          [`tail${snakeId}`]: snakeInfoMove.tail
+          [`move${snakeId}`]: "move",
+          [`newHead${snakeId}`]: snakeInfoMove.newHead,
+          [`oldHead${snakeId}`]: snakeInfoMove.oldHead,
+          [`oldHeadNextDir${snakeId}`]: snakeInfoMove.oldHeadNextDir,
+          [`oldHeadPrevDir${snakeId}`]: snakeInfoMove.oldHeadPrevDir,
+          [`oldTail${snakeId}`]: snakeInfoMove.oldTail,
+          [`newTail${snakeId}`]: snakeInfoMove.newTail,
+          [`newTailNextDir${snakeId}`]: snakeInfoMove.newTailNextDir
         };
         break;
     }
     this.board.set(snake.head.id, "snake", true);
+    info[`direction${snakeId}`] = currDir;
     return info;
   }
 
@@ -168,6 +179,8 @@ const deleteGame = id => {
 };
 
 const playAgain = (currentGameId, newGameId) => {
+  console.log(games);
+  console.log(currentGameId);
   let { name1, color1, name2, color2 } = games[currentGameId];
 
   games[newGameId].name1 = name1;
@@ -175,7 +188,7 @@ const playAgain = (currentGameId, newGameId) => {
   games[newGameId].color1 = color1;
   games[newGameId].color2 = color2;
 
-  deleteGame(currentGameId);
+  // deleteGame(currentGameId);
 
   return games[newGameId].getSummary();
 };
