@@ -1,4 +1,4 @@
-# SNAKE
+# CORONASNAKE
 
 A colorful implementation of the classic game, built as an exercise to familiarize myself with React Hooks.
 
