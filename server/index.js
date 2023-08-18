@@ -132,7 +132,7 @@ io.on("connection", (socket) => {
 
   socket.on("begin movement", () => {
     if (!interval && player === 1) {
-      interval = setInterval(intervalCB, 100);
+      interval = setInterval(intervalCB, 300);
     }
   });
 
