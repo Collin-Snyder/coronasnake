@@ -15,7 +15,7 @@ const Home = () => {
           <p className="buttonTitle">Single Player</p>
         </div>
       </Link>
-      {/* <Link to="/waitingroom/0" className="flex">
+      <Link to="/waitingroom/0" className="flex">
         <div
           className="homebutton newgame"
           onClick={() => {
@@ -29,7 +29,7 @@ const Home = () => {
         <div className="homebutton joingame">
           <p className="buttonTitle">Join Existing Game</p>
         </div>
-      </Link> */}
+      </Link>
     </div>
   );
 };

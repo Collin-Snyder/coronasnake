@@ -212,7 +212,7 @@ const MultiBoard = () => {
             >
               Play again?
             </button>
-            <a href="https://coronasnake.herokuapp.com/">
+            <a href="https://coronasnake.onrender.com/">
             {/* <a href="http://localhost:4000"> */}
               <div className="homebutton gohome">
                 <p className="buttonTitle">Home</p>
